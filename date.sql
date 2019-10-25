@@ -1,21 +1,5 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE IF NOT EXISTS date_t
-            (
-            date_id        INTEGER PRIMARY KEY, 
-            sql_date       TEXT,    -- Date as a YYYY-MM-DD string
-            date           TEXT,    -- date as a local string DD-MM-YYY
-            day            INTEGER, -- day within month (1 .. 31)
-            day_year       INTEGER, -- day within the year 1..366
-            julian_day     REAL,    -- day as Julian Day
-            weekday        TEXT,    -- Monday, Tuesday, ...
-            weekday_abbr   TEXT,    -- Abbreviated weekday: Mon, Tue, ...
-            weekday_num    INTEGER, -- weekday as number 0=Sunday
-            month_num      INTEGER, -- month as number: Jan=1, Feb=2, ..
-            month          TEXT,    -- January, February, ...
-            month_abbr     TEXT,    -- Jan, Feb, ...
-            year           INTEGER  -- Year (2000, 2001, ...)
-            );
 INSERT INTO "date_t" VALUES(20160101,'2016-01-01','01/01/2016',1,1,2457388.5,'Friday','Fri',5,1,'January','Jan',2016);
 INSERT INTO "date_t" VALUES(20160102,'2016-01-02','02/01/2016',2,2,2457389.5,'Saturday','Sat',6,1,'January','Jan',2016);
 INSERT INTO "date_t" VALUES(20160103,'2016-01-03','03/01/2016',3,3,2457390.5,'Sunday','Sun',0,1,'January','Jan',2016);

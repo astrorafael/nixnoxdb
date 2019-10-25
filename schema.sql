@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS date_t
 	year           INTEGER  -- Year (2000, 2001, ...)
 );
 
+CREATE VIEW IF NOT EXISTS start_date_v AS SELECT * FROM date_t;
+CREATE VIEW IF NOT EXISTS end_date_v   AS SELECT * FROM date_t;
+
 CREATE TABLE IF NOT EXISTS time_t
 (
 	time_id        INTEGER PRIMARY KEY, 
@@ -27,9 +30,24 @@ CREATE TABLE IF NOT EXISTS time_t
 	day_fraction   REAL     -- time as a day fraction between 0 and 1
 );
 
+CREATE VIEW IF NOT EXISTS start_time_v AS SELECT * FROM time_t;
+CREATE VIEW IF NOT EXISTS end_time_v   AS SELECT * FROM time_t;
+
+CREATE TABLE IF NOT EXISTS photometer_t
+(
+	photometer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	model         TEXT, -- Photometer model, either SQL or TASS     
+	serial_number TEXT, -- SQM serial id or TAS identifier
+	fov           REAL, -- Filed of view, in degrees
+	zero_point    REAL, -- Zero point if known (TAS only)
+	valid_since   TEXT,                               -- timestamp since zero_point value is valid
+	valid_until   TEXT DEFAULT '2999-12-31T23:59:59', -- timestamp util  zero_point value is valid
+	valid_state   TEXT DEFAULT 'Current'              -- either "Current" or "Expired"
+);
+
 CREATE TABLE IF NOT EXISTS site_t
 (
-	site_id          INTEGER PRIMARY KEY AUTOINCREMENT,
+	site_id          INTEGER PRIMARY KEY,
 	site             TEXT, -- Site Name i.e Cerro de Almodovar
 	longitude        REAL, -- in floating point degrees, negative west
 	latitude         REAL, -- in floating point degrees
@@ -41,7 +59,7 @@ CREATE TABLE IF NOT EXISTS site_t
 
 CREATE TABLE IF NOT EXISTS observer_t
 (
-	observer_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+	observer_id  INTEGER PRIMARY KEY,
 	name         TEXT, -- Site Name i.e Cerro de Almodovar
 	surname      TEXT, -- in floating point degrees, negative west
 	nickname     TEXT, -- nickname in epicollect5
@@ -50,20 +68,38 @@ CREATE TABLE IF NOT EXISTS observer_t
 	valid_until  TEXT  DEFAULT '2999-12-31T23:59:59', -- timestamp until organization value is valid
 	valid_state  TEXT  DEFAULT 'Current'              -- either "Current" or "Expired"
 );
-	
-CREATE TABLE IF NOT EXISTS observation_t
+
+CREATE TABLE IF NOT EXISTS group_t
 (
-	observation_id   INTEGER PRIMARY KEY AUTOINCREMENT, 
-	comment          TEXT,
-	image_url        TEXT,	-- Site image as an UTL
-	image            BLOB,  -- Site image as an embdeed picture
-	plot             BLOB   -- plot from readings
+	group_id     INTEGER NOT NULL,
+	observer_id  INTEGER NOT NULL REFERENCES observer_t(observer_id),
+	PRIMARY KEY (group_id, observer_id)
 );
 
 CREATE TABLE IF NOT EXISTS flags_t
 (
-	flags_id                  INTEGER PRIMARY KEY AUTOINCREMENT, 
+	flags_id                  INTEGER PRIMARY KEY, 
 	timestamp_method          TEXT
+);
+
+	
+CREATE TABLE IF NOT EXISTS observation_t
+(
+	observation_id   		 INTEGER PRIMARY KEY, 
+	start_date_id   		 INTEGER REFERENCES start_date_v(date_id), 
+	start_time_id   		 INTEGER REFERENCES start_time_v(time_id), 
+	end_date_id     		 INTEGER REFERENCES end_date_v(date_id), 
+	end_time_id      		 INTEGER REFERENCES end_time_v(time_id), 
+	photometer_id            INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
+	site_id                  INTEGER NOT NULL REFERENCES site_t(site_id),
+	observer_id              INTEGER NOT NULL REFERENCES observer_t(observer_id),
+	additional_observers_id  INTEGER REFERENCES group_t(group_id),
+	observation_id           INTEGER NOT NULL REFERENCES observation_t(observation_id),
+	flags_id                 INTEGER NOT NULL REFERENCES flags_t(flags_id),
+	comment          		 TEXT,
+	image_url        		 TEXT,	-- Site image as an UTL
+	image            		 BLOB,  -- Site image as an embdeed picture
+	plot            		 BLOB   -- plot from readings
 );
 
 -- Possible values for timestamp_method are:
@@ -74,17 +110,13 @@ CREATE TABLE IF NOT EXISTS flags_t
 
 CREATE TABLE IF NOT EXISTS readings_t
 (
-	date_id             INTEGER NOT NULL REFERENCES date_t(date_id), 
-	time_id             INTEGER NOT NULL REFERENCES time_t(time_id), 
-	photometer_id       INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
-	site_id             INTEGER NOT NULL REFERENCES site_t(site_id),
-	observer_id         INTEGER NOT NULL REFERENCES observer_t(observer_id),
-	observation_id      INTEGER NOT NULL REFERENCES observation_t(observation_id),
-	flags_id            INTEGER NOT NULL REFERENCES flags_t(flags_id),
-	azimuth             REAL,
-	altitude            REAL,
-	magnitude           REAL,
-	PRIMARY KEY (date_id, time_id, photometer_id, site_id, observer_id)
+	readings_id      INTEGER PRIMARY KEY, 
+	observation_id   INTEGER NOT NULL REFERENCES observation_t(observation_id),
+	date_id          INTEGER REFERENCES date_t(date_id),  -- individual readings date stamp
+	time_id          INTEGER REFERENCES time_t(time_id),  -- individual readings time stamp
+	azimuth          REAL,
+	altitude         REAL,
+	magnitude        REAL,
 );
 
 COMMIT;
