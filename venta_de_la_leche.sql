@@ -24,53 +24,53 @@ INSERT OR REPLACE INTO Variables VALUES ('observation_id', (SELECT last_insert_r
 --        20.94, 21.07, 20.93, 20.78, 20.63, 20.57, 20.65, 20.69, 20.67, 20.66, 20.74, 20.91]
 
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 0, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 0, 21.01);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 15, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 15, 21.03);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 30, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 30, 20.81);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 45, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 45, 20.48);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 60, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 60, 20.42);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 75, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 75, 20.52);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 90, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 90, 20.50);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 105, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 105, 20.38);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 120, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 120, 20.46);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 135, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 135, 20.64);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 150, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 150, 20.72);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 165, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 165, 20.80);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 180, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 180, 20.94);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 195, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 195,  21.07);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 210, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 210, 20.93);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 225, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 225, 20.78);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 240, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 240, 20.63);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 255, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 255, 20.57);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 270, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 270, 20.65);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 285, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 285, 20.69);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 300, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 300, 20.67);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 315, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 315, 20.66);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 330, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 330, 20.74);
 INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 345, x);
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 00, 345, 20.91);
 
 
 -- m15 = [20.56, 20.56, 20.41, 20.22, 20.22, 20.33, 20.39, 20.41, 20.48, 20.55, 20.61, 20.66, 
@@ -181,31 +181,55 @@ INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
 -- m45 = [20.98, 20.96, 20.94, 20.93, 20.89, 20.85, 20.81, 20.81, 20.85, 20.92, 20.97, 21.01,
 --       21.00, 20.99, 20.96, 20.93, 20.93, 20.96, 21.00, 21.02, 21.03, 21.04, 21.03, 21.00]
 
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 0, 20.98);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 15, 20.96);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 30, 20.94);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 45, 20.93);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 60, 20.89);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 75, 20.85);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 90, 20.81);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 105, 20.81);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 120, 20.85);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 135, 20.92);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 150, 20.97);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 165, 21.01);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 180, 21.00);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 195, 20.99);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 210, 20.96);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 225, 20.93);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 240, 20.93);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 255, 20.96);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 270, 21.00);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 285, 21.02);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 300, 21.03);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 60, 315, 21.04);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 60, 330, 21.03);
+INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
+	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 60, 345, 21.00);
 
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 0, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 30, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 60, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 90, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 120, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 150, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 180, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 210, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 240, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 270, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 300, x);
-INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
-	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 45, 330, x);
 
 -- m60 = [21.16, 21.15, 21.13, 21.12, 21.10, 21.07, 21.02, 21.00, 20.97, 20.97, 21.02, 21.02, 
 ---       21.02, 21.03, 21.03, 21.04, 21.06, 21.09, 21.13, 21.16, 21.18, 21.18, 21.18, 21.17]

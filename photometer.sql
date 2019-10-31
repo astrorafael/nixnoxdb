@@ -19,7 +19,7 @@ INSERT OR REPLACE INTO photometer_owner_t(photometer_id, observer_id) VALUES (
 	(SELECT observer_id   FROM observer_t   WHERE name  = 'Manolo' AND surname = 'Barco')
 );
 
-INSERT OR REPLACE INTO photometer_t(model, serial_number,tag) VALUES("SQM-L","934567");
+INSERT OR REPLACE INTO photometer_t(model, serial_number) VALUES("SQM-L","934567");
 INSERT OR REPLACE INTO photometer_owner_t(photometer_id, observer_id) VALUES (
 	(SELECT last_insert_rowid()),
 	(SELECT observer_id   FROM observer_t   WHERE name  = 'Jesús' AND surname = 'Navas Fernández')
