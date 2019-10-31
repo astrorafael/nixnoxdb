@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS photometer_t
 	serial_number TEXT NOT NULL, -- SQM serial id or TAS identifier
 	fov           REAL, -- Filed of view, in degrees
 	zero_point    REAL, -- Zero point if known (TAS only)
-	valid_since   TEXT DEFAULT CURRENT_TIMESTAMP,     -- timestamp since zero_point value is valid
+	valid_since   TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')),     -- timestamp since zero_point value is valid
 	valid_until   TEXT DEFAULT '2999-12-31T23:59:59', -- timestamp util  zero_point value is valid
 	valid_state   TEXT DEFAULT 'Current'              -- either "Current" or "Expired"
 );
@@ -49,15 +49,16 @@ CREATE TABLE IF NOT EXISTS photometer_t
 
 CREATE TABLE IF NOT EXISTS site_t
 (
-	site_id          INTEGER PRIMARY KEY,
-	site             TEXT, -- Site Name i.e Cerro de Almodovar
-	longitude        REAL, -- in floating point degrees, negative west
-	latitude         REAL, -- in floating point degrees
-	altitude         REAL, -- meters above sea level
-	location         TEXT, -- i.e. Coslada
-	province         TEXT, -- i.e. Madrid
-	region           TEXT, -- i.e. Comunidad de Madrid
-	country          TEXT  -- i.e España
+	site_id   INTEGER PRIMARY KEY,
+	site      NOT NULL TEXT, -- Site Name i.e Cerro de Almodovar
+	longitude NOT NULL REAL, -- in floating point degrees, negative west
+	latitude  NOT NULL REAL, -- in floating point degrees
+	altitude  REAL,          -- meters above sea level
+	location  TEXT,          -- i.e. Coslada
+	province  TEXT,          -- i.e. Madrid
+	region    TEXT,          -- i.e. Comunidad de Madrid
+	country   TEXT,          -- i.e España
+	timezone  NOT NULL TEXT  DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
 );
 
 CREATE TABLE IF NOT EXISTS observer_t
@@ -67,8 +68,8 @@ CREATE TABLE IF NOT EXISTS observer_t
 	surname      TEXT NOT NULL, -- in floating point degrees, negative west
 	nickname     TEXT, -- nickname in epicollect5
 	organization TEXT, -- i.e. AstroHenares
-	valid_since  TEXT  DEFAULT CURRENT_TIMESTAMP, -- timestamp since organization value is valid
-	valid_until  TEXT  DEFAULT '2999-12-31 23:59:59', 
+	valid_since  TEXT  DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')), -- timestamp since organization value is valid
+	valid_until  TEXT  DEFAULT '2999-12-31T23:59:59', 
     valid_state  TEXT  DEFAULT 'Current'
     -- PRIMARY KEY (name, surname)
 );
@@ -84,7 +85,9 @@ CREATE TABLE IF NOT EXISTS photometer_owner_t
 CREATE TABLE IF NOT EXISTS flags_t
 (
 	flags_id                  INTEGER PRIMARY KEY, 
-	timestamp_method          TEXT
+	timestamp_method          TEXT,
+	temperature_method        TEXT,
+	humidity_method           TEXT
 );
 
 
@@ -98,6 +101,11 @@ CREATE TABLE IF NOT EXISTS observation_t
 	end_date_id     		 INTEGER NOT NULL REFERENCES end_date_v(date_id), 
 	start_time_id   		 INTEGER          REFERENCES start_time_v(time_id), 
 	end_time_id      		 INTEGER          REFERENCES end_time_v(time_id), 
+	temperature_1            REAL, -- observation temperature 1 (see flags for details)
+	temperature_2            REAL, -- observation temperature 2 (see flags for details)
+	humidity_1               REAL, -- observation humidity 1    (see flags for details)
+	humidity_2               REAL, -- observation humidity 2    (see flags for details)
+	estado_cielo             TEXT, -- ballpark estimation of night (cloudy, clear, overcast, etc)
 	other_observers          TEXT,             
 	comment          		 TEXT,
 	image_url        		 TEXT,	-- Site image as an UTL
