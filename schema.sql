@@ -100,20 +100,20 @@ CREATE TABLE IF NOT EXISTS observation_t
 	observer_id              INTEGER NOT NULL REFERENCES observer_t(observer_id),
 	flags_id                 INTEGER NOT NULL REFERENCES flags_t(flags_id),
 	start_date_id   		 INTEGER NOT NULL REFERENCES start_date_v(date_id), 
-	end_date_id     		 INTEGER NOT NULL REFERENCES end_date_v(date_id), 
-	start_time_id   		 INTEGER          REFERENCES start_time_v(time_id), 
+	start_time_id   		 INTEGER NOT NULL REFERENCES start_time_v(time_id),
+	end_date_id     		 INTEGER        L REFERENCES end_date_v(date_id), 
 	end_time_id      		 INTEGER          REFERENCES end_time_v(time_id), 
 	temperature_1            REAL, -- observation temperature 1 (see flags for details)
 	temperature_2            REAL, -- observation temperature 2 (see flags for details)
 	humidity_1               REAL, -- observation humidity 1    (see flags for details)
 	humidity_2               REAL, -- observation humidity 2    (see flags for details)
 	weather                  TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
-	other_observers          TEXT,             
-	comment          		 TEXT,
-	image_url        		 TEXT,	-- Site image as an UTL
-	image            		 BLOB,  -- Site image as an embdeed picture
-	plot            		 BLOB,  -- plot from readings
-	PRIMARY KEY (photometer_id,site_id,observer_id,start_date_id)
+	other_observers          TEXT, -- free text for secondary observers            
+	comment          		 TEXT, -- free text fro comments
+	image_url        		 TEXT, -- Site image as an UTL
+	image            		 BLOB, -- Site image as an embdeed picture
+	plot            		 BLOB, -- plot from readings
+	PRIMARY KEY (photometer_id,site_id,observer_id,start_date_id,start_time_id)
 );
 
 -- Possible values for timestamp_method are:

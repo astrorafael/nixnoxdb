@@ -18,6 +18,7 @@ sqlite3 test.db <<EOF
 .read sant_pau_de_pinos.sql
 .read virgen_de_las_veredas.sql
 .read venta_de_la_leche.sql
+.read tentudia.sql
 SELECT * FROM observation_t;
 EOF
 sqlite3 test.db
