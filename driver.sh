@@ -1,6 +1,6 @@
 #!/bin/bash
-rm -fr test.db
-sqlite3 test.db <<EOF
+rm -fr nixnox.db
+sqlite3 nixnox.db <<EOF
 .read schema.sql
 --------------
 -- Dimensiones
@@ -21,4 +21,4 @@ sqlite3 test.db <<EOF
 .read tentudia.sql
 SELECT * FROM observation_t;
 EOF
-sqlite3 test.db
+sqlite3 nixnox.db
