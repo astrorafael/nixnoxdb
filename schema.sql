@@ -95,14 +95,14 @@ CREATE TABLE IF NOT EXISTS flags_t
 
 CREATE TABLE IF NOT EXISTS observation_t
 ( 
-	photometer_id            INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
 	site_id                  INTEGER NOT NULL REFERENCES site_t(site_id),
 	observer_id              INTEGER NOT NULL REFERENCES observer_t(observer_id),
 	flags_id                 INTEGER NOT NULL REFERENCES flags_t(flags_id),
+	photometer_id            INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
 	start_date_id   		 INTEGER NOT NULL REFERENCES start_date_v(date_id), 
 	start_time_id   		 INTEGER NOT NULL REFERENCES start_time_v(time_id),
 	end_date_id     		 INTEGER        L REFERENCES end_date_v(date_id), 
-	end_time_id      		 INTEGER          REFERENCES end_time_v(time_id), 
+	end_time_id      		 INTEGER          REFERENCES end_date_v(time_id), 
 	temperature_1            REAL, -- observation temperature 1 (see flags for details)
 	temperature_2            REAL, -- observation temperature 2 (see flags for details)
 	humidity_1               REAL, -- observation humidity 1    (see flags for details)
@@ -110,26 +110,21 @@ CREATE TABLE IF NOT EXISTS observation_t
 	weather                  TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
 	other_observers          TEXT, -- free text for secondary observers            
 	comment          		 TEXT, -- free text fro comments
-	image_url        		 TEXT, -- Site image as an UTL
+	image_url        		 TEXT, -- Site image as an URL
 	image            		 BLOB, -- Site image as an embdeed picture
 	plot            		 BLOB, -- plot from readings
-	PRIMARY KEY (photometer_id,site_id,observer_id,start_date_id,start_time_id)
+	PRIMARY KEY (site_id,observer_id,start_date_id,start_time_id)
 );
-
--- Possible values for timestamp_method are:
--- 0 = Individual timepstamp readings
--- 1 = Start timestamp given, forward readings interpolation assuming 5 minutes each
--- 2 = End timestamp given, backwards readings interpolation assuming 5 minutes each
--- 3 = Both start & end timestamp, equal interpolated timestamp readings
 
 CREATE TABLE IF NOT EXISTS readings_t
 (
 	observation_id   INTEGER NOT NULL REFERENCES observation_t(rowid),
 	date_id          INTEGER REFERENCES date_t(date_id),  -- individual readings date stamp
 	time_id          INTEGER REFERENCES time_t(time_id),  -- individual readings time stamp
-	azimuth          REAL,
-	altitude         REAL,
-	magnitude        REAL
+	azimuth          REAL, -- degrees, 0 is South
+	altitude         REAL, -- degrees
+	magnitude        REAL, -- magnitude/arcser^2
+	tdky             REAL  -- Sky temperature in ºC (TAS device only)
 );
 
 COMMIT;
