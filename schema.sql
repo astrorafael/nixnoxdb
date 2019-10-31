@@ -39,8 +39,9 @@ CREATE TABLE IF NOT EXISTS photometer_t
 	photometer_id INTEGER PRIMARY KEY,
 	model         TEXT NOT NULL, -- Photometer model, either SQL or TASS     
 	serial_number TEXT NOT NULL, -- SQM serial id or TAS identifier
-	fov           REAL, -- Filed of view, in degrees
-	zero_point    REAL, -- Zero point if known (TAS only)
+	tag           TEXT,          -- photometer tag or symbolic name i.e. SEA#08
+	fov           REAL,          -- Filed of view, in degrees
+	zero_point    REAL,          -- Zero point if known (TAS only)
 	valid_since   TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')),     -- timestamp since zero_point value is valid
 	valid_until   TEXT DEFAULT '2999-12-31T23:59:59', -- timestamp util  zero_point value is valid
 	valid_state   TEXT DEFAULT 'Current'              -- either "Current" or "Expired"
@@ -50,15 +51,16 @@ CREATE TABLE IF NOT EXISTS photometer_t
 CREATE TABLE IF NOT EXISTS site_t
 (
 	site_id   INTEGER PRIMARY KEY,
-	site      NOT NULL TEXT, -- Site Name i.e Cerro de Almodovar
-	longitude NOT NULL REAL, -- in floating point degrees, negative west
-	latitude  NOT NULL REAL, -- in floating point degrees
-	altitude  REAL,          -- meters above sea level
-	location  TEXT,          -- i.e. Coslada
-	province  TEXT,          -- i.e. Madrid
-	region    TEXT,          -- i.e. Comunidad de Madrid
-	country   TEXT,          -- i.e España
-	timezone  NOT NULL TEXT  DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
+	site      TEXT NOT NULL , -- Site Name i.e Cerro de Almodovar
+	longitude REAL NOT NULL , -- in floating point degrees, negative west
+	latitude  REAL NOT NULL , -- in floating point degrees
+	altitude  REAL,           -- meters above sea level
+	location  TEXT,           -- i.e. Coslada
+	province  TEXT,           -- i.e. Madrid
+	region    TEXT,           -- i.e. Comunidad de Madrid
+	country   TEXT NOT NULL DEFAULT 'España',       -- i.e España
+	timezone  TEXT NOT NULL DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
+	-- PRIMARY KEY (site)
 );
 
 CREATE TABLE IF NOT EXISTS observer_t
@@ -105,12 +107,12 @@ CREATE TABLE IF NOT EXISTS observation_t
 	temperature_2            REAL, -- observation temperature 2 (see flags for details)
 	humidity_1               REAL, -- observation humidity 1    (see flags for details)
 	humidity_2               REAL, -- observation humidity 2    (see flags for details)
-	estado_cielo             TEXT, -- ballpark estimation of night (cloudy, clear, overcast, etc)
+	weather                  TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
 	other_observers          TEXT,             
 	comment          		 TEXT,
 	image_url        		 TEXT,	-- Site image as an UTL
 	image            		 BLOB,  -- Site image as an embdeed picture
-	plot            		 BLOB,   -- plot from readings
+	plot            		 BLOB,  -- plot from readings
 	PRIMARY KEY (photometer_id,site_id,observer_id,start_date_id)
 );
 

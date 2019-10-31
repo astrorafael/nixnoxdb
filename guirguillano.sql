@@ -3,17 +3,15 @@ BEGIN TRANSACTION;
 
 CREATE TEMP TABLE IF NOT EXISTS Variables (Name TEXT PRIMARY KEY, Value TEXT);
 
--- # FECHA	24/03/2012
--- # HORA INICIO	01:00	# HORA FINAL 	02:41	
-INSERT INTO observation_t(start_date_id,start_time_id,end_date_id,end_time_id,photometer_id,site_id,observer_id,other_observers,flags_id)
+INSERT INTO observation_t(start_date_id,start_time_id,end_date_id,end_time_id,photometer_id,site_id,observer_id,flags_id,other_observers)
 VALUES(
 	20120124, 010000,
 	20120124, 024100,
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Fernando" AND o.surname = "Jáuregui"),
 	(SELECT site_id         FROM site_t             WHERE site = "Observatorio de Guirguillano"),
-	(SELECT observer_id     FROM observer_t        WHERE name = "Fernando" AND surname = "Jáuregui"),
-	"Periko Martorell y David Cebrián",
-	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp, equal interpolated timestamp readings")
+	(SELECT observer_id     FROM observer_t         WHERE name = "Fernando" AND surname = "Jáuregui"),
+	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "No temperatures known" AND humidity_method = "No humidity known"),
+	"Periko Martorell y David Cebrián"
 );
 
 -- Keep the last row id (observation id) to insert readings
@@ -191,9 +189,3 @@ INSERT INTO readings_t(observation_id, altitude, azimuth, magnitude)
 	VALUES( (SELECT Value FROM Variables WHERE Name = 'observation_id'), 90, 0, 21.21);
 
 COMMIT;
-
--- Possible values are:
--- 0 = Individual timepstamp readings
--- 1 = Start timestamp given, forward readings interpolation assuming 5 minutes each
--- 2 = End timestamp given, backwards readings interpolation assuming 5 minutes each
--- 3 = Both start & end timestamp, equal interpolated timestamp readings
