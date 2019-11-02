@@ -98,6 +98,43 @@ def get_observation(resultset):
         'other_observers','comment','image_url','image','plot']
     return  { k: v for k, v in dict(zip(keys,resultset)).items() if v is not None}
 
+def get_readings1(connection, observation_id):
+    cursor = connection.cursor()
+    row = {'observation_id': observation_id}
+    cursor.execute(
+        '''
+        SELECT altitude, azimuth, magnitude
+        FROM  readings_t
+        WHERE observation_id == :observation_id
+        ORDER BY altitude ASC, azimuth ASC
+        ''', row)
+    result = cursor.fetchall()
+    keys = ['altitude','azimuth','magnitude']
+    return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
+
+def get_readings2(connection, observation_id):
+    cursor = connection.cursor()
+    row = {'observation_id': observation_id}
+    cursor.execute(
+        '''
+        SELECT r.altitude, r.azimuth, r.magnitude, r.tsky, d.sql_date || 'T' || t.time || 'Z') AS timestamp,
+        FROM readings_t AS r
+        JOIN date_t     AS d USING (date_id)
+        JOIN time_t     AS t USING (time_id) 
+        WHERE r.observation_id == :observation_id
+        ORDER BY r.altitude ASC, r.azimuth ASC
+        ''', row)
+    result = cursor.fetchall()
+    keys = ['altitude','azimuth','magnitude','tsky','timestamp']
+    return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
+
+def get_readings(connection, observation_id, flags):
+    if flags['timestamp_method'] == "Individual readings timestamp":
+        return get_readings2(connection, observation_id)
+    else:
+        return get_readings1(connection, observation_id)
+
+
 def get_observer(connection, observer_id):
     cursor = connection.cursor()
     row = {'observer_id': observer_id}
@@ -186,19 +223,6 @@ def get_flags(connection, flags_id):
 # AUXILIARY FUNCTIONS
 # -------------------
 
-def render_readings(dbreading, timezone):
-    tzobj = pytz.timezone(timezone)
-    dt = datetime.datetime.strptime(dbreading[0], TSTAMP_FORMAT).replace(tzinfo=pytz.utc)
-    record = {
-            'utc':  dbreading[0], 
-            'local': dt.astimezone(tzobj).strftime(TSTAMP_FORMAT),
-            'tamb': dbreading[1], 
-            'tsky': dbreading[2], 
-            'freq': dbreading[3], 
-            'mag':  dbreading[4],
-            'zp':   dbreading[5],
-        }
-    return "%(utc)s;%(local)s;%(tamb)s;%(tsky)s;%(freq)s;%(mag)s;%(zp)s" % record
 
 
 def mkmonth(datestr):
@@ -250,17 +274,18 @@ def get_context(connection, observation_resultset):
     observation = get_observation(observation_resultset)
     # Mandatory items
     context['observation'] = observation
-    context['start_date'] = get_date(connection, observation['start_date_id'])
-    context['start_time'] = get_time(connection, observation['start_time_id'])
-    context['site'] = get_site(connection, observation['site_id'])
-    context['observer'] = get_observer(connection, observation['observer_id'])
-    context['photometer'] = get_photometer(connection, observation['photometer_id'])
-    context['flags'] = get_flags(connection, observation['flags_id'])
+    context['start_date']  = get_date(connection, observation['start_date_id'])
+    context['start_time']  = get_time(connection, observation['start_time_id'])
+    context['site']        = get_site(connection, observation['site_id'])
+    context['observer']    = get_observer(connection, observation['observer_id'])
+    context['photometer']  = get_photometer(connection, observation['photometer_id'])
+    context['flags']       = get_flags(connection, observation['flags_id'])
     # Optional items
     if 'end_date_id' in observation:
         context['end_date'] = get_date(connection, observation['end_date_id'])
     if 'end_time_id' in observation:
         context['end_time'] = get_time(connection, observation['end_time_id'])
+    context['readings'] = get_readings(connection, observation['observation_id'], context['flags'])
     return context
 
 
@@ -270,7 +295,6 @@ def read_all(connection, options):
         context = get_context(connection, observation_resultset)
         output = render(options.template, context)
         print(output)
-        print('\n')
         
 
 def main():

@@ -10,7 +10,7 @@
 # Sitio:
 #   Nombre: {{ site.site }}
 #   Coordenadas: {{ site.latitude }}, {{ site.longitude }}
-#   Altitud: {{ site.altitude }}m
+#   Altitud: {{ site.altitude }} m
 #   Municipio:  {{ site.location }}
 #   Provincia: {{ site.province }}
 #   Comunidad: {{ site.region }}
@@ -49,5 +49,8 @@
 {% if observation.comment is defined -%}
 #   Comentario: {{ observation.comment  }}
 {% endif -%}
-# END OF HEADER
-
+# altura;acimut;magnitud;temperatura_de_cielo;marca_de_tiempo
+# FIN DE CABECERA
+{% for reading in readings -%}
+{{ reading.altitude }};{{ reading.azimuth }};{{ reading.magnitude }};{{ reading.tsky | default(omit) }};{{ reading.timestamp | default(omit) }}
+{% endfor -%}
