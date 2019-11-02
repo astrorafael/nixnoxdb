@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS readings_t
 	azimuth          REAL, -- degrees, 0 is South
 	altitude         REAL, -- degrees
 	magnitude        REAL, -- magnitude/arcser^2
-	tdky             REAL  -- Sky temperature in ºC (TAS device only)
+	tsky             REAL  -- Sky temperature in ºC (TAS device only)
 );
 
 COMMIT;
