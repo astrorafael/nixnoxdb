@@ -88,6 +88,7 @@ def fetch_observations(connection, options):
         '''
         SELECT rowid,*
         FROM observation_t
+        ORDER BY start_date_id ASC, start_time_id ASC
         ''')
     return cursor
 
