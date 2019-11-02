@@ -1,27 +1,37 @@
 # FICHA DE OBSERVACION
 # Observador:
 #   Nombre:  {{ observer.name }} {{ observer.surname }} 
-#   Organizacion: {{ observer.organization | default('omit') }}
-# Observadores adicionales: {{ observation.other_observers | default('omit') }}
+#   Organizacion: {{ observer.organization  }}
+# Observadores adicionales: {{ observation.other_observers  }}
 # Fotometro: 
 #   Modelo: {{ photometer.model }}
 #   Identificador: {{ photometer.serial_number }}
-#   Campo de vision: {{ photometer.fov | default('omit')}}
+#   Campo de vision: {{ photometer.fov | default(omit)}}
 # Sitio:
 #   Nombre: {{ site.site }}
 #   Coordenadas: {{ site.latitude }}, {{ site.longitude }}
-#   Altitud: {{ site.altitude | default('omit') }}
-#   Municipio:  {{ site.location | default('omit') }}
-#   Provincia: {{ site.province | default('omit') }}
-#   Comunidad: {{ site.region | default('omit') }}
-#   Pais: {{ site.site }}
+#   Altitud: {{ site.altitude | default(omit) }}
+#   Municipio:  {{ site.location | default(omit) }}
+#   Provincia: {{ site.province | default(omit) }}
+#   Comunidad: {{ site.region | default(omit) }}
+#   Pais: {{ site.country }}
 #   Zona horaria: {{ site.timezone }}
-# Hora:
+# Fecha y Hora:
+{% if flags.timestamp_method == "Start & end timestamp" -%}
+#   Comienzo: {{ start_date.date }} {{ start_time.time }}
+#   Final:    {{ end_date.date }} {{ end_date.time }}
+{% elif flags.timestamp_method == "Start timestamp only" -%}
+#   Comienzo: {{ start_date.date }} {{ start_time.time }}
+{% elif flags.timestamp_method == "End timestamp only" -%}
+# NOT YET IMPLEMENTED
+{% else -%}
+# NOT YET IMPLEMENTED
+{% endif -%}
 #  
 # Otros datos de la observacion:
-#   Temperatura: {{ observation.temperature_1 | default('omit') }}
-#   Humedad:  {{ observation.humidity_1 | default('omit') }}
-#   Cielo: {{ observation.weather | default('omit') }}
-#   Comentario: {{ observation.comment | default('omit') }}
+#   Temperatura: {{ observation.temperature_1 | default(omit) }}
+#   Humedad:  {{ observation.humidity_1 | default(omit) }}
+#   Cielo: {{ observation.weather | default(omit) }}
+#   Comentario: {{ observation.comment  }}
 # END OF HEADER
 

@@ -95,7 +95,7 @@ def get_observation(resultset):
     keys = ['observation_id', 'site_id', 'observer_id', 'flags_id', 'photometer_id', 'start_date_id', 'start_time_id',
         'end_date_id','end_time_id','temperature_1','temperature_2','humidity_1', 'humidity_2', 'weather',
         'other_observers','comment','image_url','image','plot']
-    return dict(zip(keys,resultset))
+    return  { k: v for k, v in dict(zip(keys,resultset)).items() if v is not None}
 
 def get_observer(connection, observer_id):
     cursor = connection.cursor()
@@ -109,9 +109,7 @@ def get_observer(connection, observer_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['name','surname', 'nickname', 'organization']
-    print(result)
-    print(type(result))
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 def get_photometer(connection, photometer_id):
     cursor = connection.cursor()
@@ -125,7 +123,7 @@ def get_photometer(connection, photometer_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['model','serial_number','tag','fov','zero_point']
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
     
 def get_site(connection, site_id):
     cursor = connection.cursor()
@@ -138,7 +136,7 @@ def get_site(connection, site_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['site', 'longitude', 'latitude', 'altitude', 'location', 'province', 'region', 'country', 'timezone']
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 
 def get_date(connection, date_id):
@@ -152,7 +150,7 @@ def get_date(connection, date_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['date']
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 
 def get_time(connection, time_id):
@@ -166,7 +164,7 @@ def get_time(connection, time_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['time']
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 
 def get_flags(connection, flags_id):
@@ -180,7 +178,7 @@ def get_flags(connection, flags_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['timestamp_method', 'temperature_method', 'humidity_method']
-    return dict(zip(keys,result))
+    return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 
 # -------------------
@@ -251,7 +249,6 @@ def get_context(connection, observation_resultset):
     observation = get_observation(observation_resultset)
     # Mandatory items
     context['observation'] = observation
-    print(observation)
     context['start_date'] = get_date(connection, observation['start_date_id'])
     context['start_time'] = get_time(connection, observation['start_time_id'])
     context['site'] = get_site(connection, observation['site_id'])
@@ -259,10 +256,11 @@ def get_context(connection, observation_resultset):
     context['photometer'] = get_photometer(connection, observation['photometer_id'])
     context['flags'] = get_flags(connection, observation['flags_id'])
     # Optional items
-    context['end_date'] = get_date(connection, observation['end_date_id']) if observation['end_date_id'] is not None else None
-    context['end_time'] = get_time(connection, observation['end_time_id']) if observation['end_time_id'] is not None else None
+    if 'end_date_id' in observation:
+        context['end_date'] = get_date(connection, observation['end_date_id'])
+    if 'end_time_id' in observation:
+        context['end_time'] = get_time(connection, observation['end_time_id'])
     return context
-
 
 
 def read_all(connection, options):
