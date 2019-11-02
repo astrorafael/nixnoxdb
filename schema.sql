@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS date_t
 (
 	date_id        INTEGER PRIMARY KEY, 
 	sql_date       TEXT,    -- Date as a YYYY-MM-DD string
-	date           TEXT,    -- date as a local string DD-MM-YYY
+	date           TEXT,    -- date as a local string DD-MM-YYYY
 	day            INTEGER, -- day within month (1 .. 31)
 	day_year       INTEGER, -- day within the year 1..366
 	julian_day     REAL,    -- day as Julian Day

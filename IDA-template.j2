@@ -1,0 +1,27 @@
+# FICHA DE OBSERVACION
+# Observador:
+#   Nombre:  {{ observer.name }} {{ observer.surname }} 
+#   Organizacion: {{ observer.organization | default('omit') }}
+# Observadores adicionales: {{ observation.other_observers | default('omit') }}
+# Fotometro: 
+#   Modelo: {{ photometer.model }}
+#   Identificador: {{ photometer.serial_number }}
+#   Campo de vision: {{ photometer.fov | default('omit')}}
+# Sitio:
+#   Nombre: {{ site.site }}
+#   Coordenadas: {{ site.latitude }}, {{ site.longitude }}
+#   Altitud: {{ site.altitude | default('omit') }}
+#   Municipio:  {{ site.location | default('omit') }}
+#   Provincia: {{ site.province | default('omit') }}
+#   Comunidad: {{ site.region | default('omit') }}
+#   Pais: {{ site.site }}
+#   Zona horaria: {{ site.timezone }}
+# Hora:
+#  
+# Otros datos de la observacion:
+#   Temperatura: {{ observation.temperature_1 | default('omit') }}
+#   Humedad:  {{ observation.humidity_1 | default('omit') }}
+#   Cielo: {{ observation.weather | default('omit') }}
+#   Comentario: {{ observation.comment | default('omit') }}
+# END OF HEADER
+

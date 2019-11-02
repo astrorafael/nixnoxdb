@@ -80,6 +80,23 @@ def result_generator(cursor, arraysize=500):
         for result in results:
             yield result
 
+
+def fetch_observations(connection, options):
+    '''From start of month at midnight UTC'''
+    cursor = connection.cursor()
+    cursor.execute(
+        '''
+        SELECT rowid,*
+        FROM observation_t
+        ''')
+    return cursor
+
+def get_observation(resultset):
+    keys = ['observation_id', 'site_id', 'observer_id', 'flags_id', 'photometer_id', 'start_date_id', 'start_time_id',
+        'end_date_id','end_time_id','temperature_1','temperature_2','humidity_1', 'humidity_2', 'weather',
+        'other_observers','comment','image_url','image','plot']
+    return dict(zip(keys,resultset))
+
 def get_observer(connection, observer_id):
     cursor = connection.cursor()
     row = {'observer_id': observer_id}
@@ -91,13 +108,8 @@ def get_observer(connection, observer_id):
         AND   observer_id == :observer_id
         ''', row)
     result = cursor.fetchone()
-    return {
-        'name':         result[0],
-        'surname':      result[1],
-        'surname':      result[2],
-        'organization': result[3],
-    }
-
+    keys = ['name','surname', 'nickname', 'organization']
+    return dict(zip(keys,result))
 
 def get_photometer(connection, photometer_id):
     cursor = connection.cursor()
@@ -110,13 +122,8 @@ def get_photometer(connection, photometer_id):
         AND   photometer_id == :photometer_id
         ''', row)
     result = cursor.fetchone()
-    return {
-        'model':         result[0],
-        'serial_number': result[1],
-        'tag':           result[2],
-        'fov':           result[3],
-        'zero_point':    result[4],
-    }
+    keys = ['model','serial_number','tag','fov','zero_point']
+    return dict(zip(keys,result))
     
 def get_site(connection, site_id):
     cursor = connection.cursor()
@@ -128,203 +135,52 @@ def get_site(connection, site_id):
         WHERE site_id == :site_id
         ''', row)
     result = cursor.fetchone()
-    return {
-        'site':      result[0],
-        'longitude': result[1],
-        'latitude':  result[2],
-        'altitude':  result[3],
-        'location':  result[4],
-        'province':  result[5],
-        'region':    result[6],
-        'country':   result[7],
-        'timezone':  result[8],
-    }
+    keys = ['site', 'longitude', 'latitude', 'altitude', 'location', 'province', 'region', 'country', 'timezone']
+    return dict(zip(keys,result))
 
 
 def get_date(connection, date_id):
-    pass
+    cursor = connection.cursor()
+    row = {'date_id': date_id}
+    cursor.execute(
+        '''
+        SELECT date
+        FROM  date_t
+        WHERE date_id == :date_id
+        ''', row)
+    result = cursor.fetchone()
+    print(result)
+    print(type(result))
+    keys = ['date']
+    return dict(zip(keys,result))
+
 
 def get_time(connection, time_id):
-    pass
-
-
-
-
-def get_metadata(connection, options, location_id):
     cursor = connection.cursor()
-    row = {'name': options.name, 'location_id': location_id}
+    row = {'time_id': time_id}
     cursor.execute(
-            '''
-            SELECT name, channel, model, firmware, mac_address,
-                    zero_point, cover_offset, filter, fov, azimuth, altitude
-            FROM tess_t
-            WHERE valid_state == "Current"
-            AND   name == :name
-            ''', row)
-    # Solo para instrumentos TESS monocanal
+        '''
+        SELECT time
+        FROM  time_t
+        WHERE time_id == :time_id
+        ''', row)
     result = cursor.fetchone()
-    instrument = {
-        'name':         result[0],
-        'channel':      result[1],
-        'model':        result[2],
-        'firmware':     result[3],
-        'mac_address':  result[4],
-        'zero_point':   result[5],
-        'cover_offset': result[6],
-        'filter':       result[7],
-        'fov':          result[8],
-        'azimuth':      result[9],
-        'altitude':     result[10],
-    }
+    keys = ['time']
+    return dict(zip(keys,result))
+
+def get_flags(connection, flags_id):
+    cursor = connection.cursor()
+    row = {'flags_id': flags_id}
     cursor.execute(
-            '''
-            SELECT contact_name, organization,
-                   site, longitude, latitude, elevation, location, province, country, timezone
-            FROM location_t
-            WHERE location_id == :location_id
-            ''', row)
+        '''
+        SELECT timestamp_method, temperature_method, humidity_method
+        FROM  flags_t
+        WHERE flags_id == :flags_id
+        ''', row)
     result = cursor.fetchone()
-    location = {
-        'contact_name'   : result[0],
-        'organization'   : result[1],
-        'site'           : result[2],
-        'longitude'      : result[3],
-        'latitude'       : result[4],
-        'elevation'      : result[5],
-        'location'       : result[6],
-        'province'       : result[7],
-        'country'        : result[8],
-        'timezone'       : result[9],
-        
-    }
-    return instrument, location
+    keys = ['timestamp_method', 'temperature_method', 'humidity_method']
+    return dict(zip(keys,result))
 
-def analyze_latest_dbreadings(connection, options):
-    '''From start of month at midnight UTC
-    Return a list of tuples (count, location_id, date_id)'''
-    row = {'name': options.name}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT COUNT (*), r.location_id, MIN(r.date_id)
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND datetime(d.sql_date || 'T' || t.time || '.000') 
-        BETWEEN datetime('now', 'start of month' ) AND datetime('now')
-        GROUP BY r.location_id
-        ORDER BY MIN(r.date_id) ASC;
-        ''', row)
-    return cursor.fetchall()
-
-
-def analyze_previous_dbreadings(connection, options):
-    '''From start of previous month at midnight UTC
-    Return a list of tuples (count, location_id, date_id)
-    '''
-    row = {'name': options.name}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT COUNT (*), r.location_id, MIN(r.date_id)
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND datetime(d.sql_date || 'T' || t.time || '.000') 
-        BETWEEN datetime('now', 'start of month', '-1 month' ) 
-        AND     datetime('now', 'start of month')
-        GROUP BY r.location_id
-        ORDER BY MIN(r.date_id) ASC;
-        ''', row)
-    return cursor.fetchall()
-
-
-def analyze_dbreadings_for_month(connection, options):
-    '''From start of month at midday UTC
-        Return a list of tuples (count, location_id, date_id)'''
-    row = {'name': options.name, 'from_date': options.for_month.strftime(TSTAMP_FORMAT)}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT COUNT (*), r.location_id, MIN(r.date_id)
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND datetime(d.sql_date || 'T' || t.time || '.000') 
-        BETWEEN datetime(:from_date) 
-        AND     datetime(:from_date, '+1 month')
-        GROUP BY r.location_id
-        ORDER BY MIN(r.date_id) ASC;
-        ''', row)
-    return cursor.fetchall()
-
-
-
-def fetch_latest_dbreadings(connection, options, location_id):
-    '''From start of month at midnight UTC'''
-    row = {'name': options.name, 'location_id': location_id}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT (d.sql_date || 'T' || t.time || '.000') AS timestamp, r.ambient_temperature, r.sky_temperature, r.frequency, r.magnitude, i.zero_point
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND r.location_id == :location_id
-        AND datetime(timestamp) BETWEEN datetime('now', 'start of month') 
-                                AND     datetime('now')
-        ORDER BY r.date_id ASC, r.time_id ASC
-        ''', row)
-    return cursor
-
-
-def fetch_previous_dbreadings(connection, options, location_id):
-    '''From start of previous month at midnight UTC'''
-    row = {'name': options.name, 'location_id': location_id}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT (d.sql_date || 'T' || t.time || '.000') AS timestamp, r.ambient_temperature, r.sky_temperature, r.frequency, r.magnitude, i.zero_point
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND r.location_id == :location_id
-        AND datetime(timestamp) BETWEEN datetime('now', 'start of month', '-1 month') 
-                                AND     datetime('now', 'start of month')
-        ORDER BY r.date_id ASC, r.time_id ASC
-        ''', row)
-    return cursor
-
-
-def fetch_dbreadings_for_month(connection, options, location_id):
-    '''From start of month at midday UTC'''
-    row = {'name': options.name, 'location_id': location_id, 'from_date': options.for_month.strftime(TSTAMP_FORMAT)}
-    cursor = connection.cursor()
-    cursor.execute(
-        '''
-        SELECT (d.sql_date || 'T' || t.time || '.000') AS timestamp, r.ambient_temperature, r.sky_temperature, r.frequency, r.magnitude, i.zero_point
-        FROM tess_readings_t as r
-        JOIN date_t     as d USING (date_id)
-        JOIN time_t     as t USING (time_id)
-        JOIN tess_t     as i USING (tess_id)
-        WHERE i.name == :name
-        AND r.location_id == :location_id
-        AND datetime(timestamp) BETWEEN datetime(:from_date) 
-                                AND     datetime(:from_date, '+1 month')
-        ORDER BY r.date_id ASC, r.time_id ASC
-        ''', row)
-    return cursor
-    
 
 # -------------------
 # AUXILIARY FUNCTIONS
@@ -366,12 +222,12 @@ def create_directories(instrument_name, out_dir, year=None):
         os.makedirs(sub_dir)
    
 # -------------------
-# IDA FILE Generation
+# FILE Generation
 # -------------------
 
 def write_NXNX_header_file(result, instrument_name, out_dir, timestamp, suffix):
     '''Writes the IDA header file after contained in result'''
-    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".dat"
+    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".txt"
     full_name = os.path.join(out_dir, instrument_name, file_name)
     if sys.version_info[0] > 2:
         result = result.decode('utf-8')
@@ -379,7 +235,7 @@ def write_NXNX_header_file(result, instrument_name, out_dir, timestamp, suffix):
         outfile.write(result)
 
 def write_NXNX_body_file(result, instrument_name, out_dir, timestamp, suffix):
-    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".dat"
+    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".txt"
     full_name = os.path.join(out_dir, instrument_name, file_name)
     with open(full_name, 'a') as outfile:
         outfile.write(result)
@@ -389,42 +245,42 @@ def write_NXNX_body_file(result, instrument_name, out_dir, timestamp, suffix):
 # MAIN FUNCTION
 # -------------
 
-def do_one_pass(connection, resultset, options):
-    empty = len(resultset) == 0
-    if not empty:
-            # Render one IDA file per diferent location in case the TESS nstrument
-            # has changed location during the given month
-        for idx, result in enumerate(resultset):
-            count = result[0]
-            location_id = result[1]
-            start_date_id = result[2]
-            print("Generating monthly IDA file for {0} with {1} samples starting from {2} for location id {3}".format(options.name, count, start_date_id, location_id))
-            create_directories(options.name, options.out_dir)
-            if options.latest_month:
-                timestamp  = datetime.datetime.utcnow()
-                cursor = fetch_latest_dbreadings(connection, options, location_id)
-            elif options.previous_month:
-                # back to last day of previous month
-                timestamp = datetime.datetime.utcnow().replace(day=1,hour=0,minute=0,second=0,microsecond=0)
-                timestamp -= datetime.timedelta(days=1)
-                cursor = fetch_previous_dbreadings(connection, options, location_id)
-            else:
-                timestamp  = options.for_month
-                cursor = fetch_dbreadings_for_month(connection, options, location_id)
-            # render IDA header file from Jinja2 template
-            context = {}
-            context['instrument'], context['location'] = get_metadata(connection, options, location_id)
-            timezone = context['location']['timezone']
-            header = render(options.template, context).encode('utf-8')
-            suffix = '' if idx == 0 else '_x' + str(idx)
-            write_IDA_header_file(header, options.name, options.out_dir, timestamp, suffix)
-            # render IDA body file by doing direct I/O
-            for reading in result_generator(cursor):
-                body_line = render_readings(reading, timezone)
-                write_IDA_body_file(body_line, options.name, options.out_dir, timestamp, suffix)
-    else:
-        print("No data: skipping subdirs creation and IDA file generation")
-  
+def get_context(connection, observation_resultset):
+    context = {}
+    observation = get_observation(observation_resultset)
+    # Mandatory items
+    context['observation'] = observation
+    print(observation)
+    context['start_date'] = get_date(connection, observation['start_date_id'])
+    context['start_time'] = get_time(connection, observation['start_time_id'])
+    context['site'] = get_site(connection, observation['site_id'])
+    context['observer'] = get_observer(connection, observation['observer_id'])
+    context['photometer'] = get_photometer(connection, observation['photometer_id'])
+    context['flags'] = get_observer(connection, observation['flags_id'])
+    # Optional items
+    context['end_date'] = get_date(connection, observation['end_date_id']) if observation['end_date_id'] is not None else None
+    context['end_time'] = get_date(connection, observation['end_time_id']) if observation['end_time_id'] is not None else None
+    context['temperature_1'] = get_date(connection, observation['temperature_1']) if observation['temperature_1'] is not None else None
+    context['temperature_2'] = get_date(connection, observation['temperature_2']) if observation['temperature_2'] is not None else None
+    context['humidity_1'] = get_date(connection, observation['humidity_1']) if observation['humidity_1'] is not None else None
+    context['humidity_2'] = get_date(connection, observation['humidity_2']) if observation['humidity_2'] is not None else None
+    context['other_observers'] = get_date(connection, observation['other_observers']) if observation['other_observers'] is not None else None
+    context['comment'] = get_date(connection, observation['comment']) if observation['comment'] is not None else None
+    context['image_url'] = get_date(connection, observation['image_url']) if observation['image_url'] is not None else None
+    context['image'] = get_date(connection, observation['image']) if observation['image'] is not None else None
+    context['plot'] = get_date(connection, observation['plot']) if observation['plot'] is not None else None
+    return context
+
+
+
+def read_all(connection, options):
+    cursor = fetch_observations(connection, options)
+    for observation_resultset in result_generator(cursor):
+        context = get_context(connection, observation_resultset)
+        output = render(options.template, context)
+        print(output)
+        print('\n')
+        
 
 def main():
     '''
@@ -433,9 +289,11 @@ def main():
     try:
         options = createParser().parse_args(sys.argv[1:])
         connection = open_database(options.dbase)
+        read_all(connection, options)
 
     except KeyboardInterrupt:
         print('Interrupted by user ^C')
     #except Exception as e:
         print("Error => {0}".format(e))
 
+main()
