@@ -6,14 +6,14 @@
 # Fotometro: 
 #   Modelo: {{ photometer.model }}
 #   Identificador: {{ photometer.serial_number }}
-#   Campo de vision: {{ photometer.fov | default(omit)}}
+#   Campo de vision: {{ photometer.fov }}
 # Sitio:
 #   Nombre: {{ site.site }}
 #   Coordenadas: {{ site.latitude }}, {{ site.longitude }}
-#   Altitud: {{ site.altitude | default(omit) }}
-#   Municipio:  {{ site.location | default(omit) }}
-#   Provincia: {{ site.province | default(omit) }}
-#   Comunidad: {{ site.region | default(omit) }}
+#   Altitud: {{ site.altitude }}m
+#   Municipio:  {{ site.location }}
+#   Provincia: {{ site.province }}
+#   Comunidad: {{ site.region }}
 #   Pais: {{ site.country }}
 #   Zona horaria: {{ site.timezone }}
 # Fecha y Hora:
@@ -27,11 +27,27 @@
 {% else -%}
 # NOT YET IMPLEMENTED
 {% endif -%}
-#  
 # Otros datos de la observacion:
-#   Temperatura: {{ observation.temperature_1 | default(omit) }}
-#   Humedad:  {{ observation.humidity_1 | default(omit) }}
-#   Cielo: {{ observation.weather | default(omit) }}
+{% if flags.temperatures_method == "Unique temperatures measurement" -%}
+#   Temperatura: {{ observation.temperature_1 }}
+{% elif flags.temperatures_method == "Initial & Final temperatures" -%}
+#   Temperatura: {{ observation.temperature_1 }} (inicio), {{ observation.temperature_2 }} (fin)
+{% elif flags.temperatures_method == "Max & Min temperatures" %}
+#   Temperatura: {{ observation.temperature_1 }} (max.), {{ observation.temperature_2 }} (min.)
+{% else -%}
+{% endif -%}
+{% if flags.humidity_method == "Unique humidity measurement" -%}
+#   Humedad:  {{ observation.humidity_1 }}%
+{% elif flags.humidity_method == "Initial & Final humidities" -%}
+#   Humedad: {{ observation.humidity_1 }}% (inicio), {{ observation.humidity_2 }}% (fin)
+{% elif flags.humidity_method == "Max & Min humidities" %}
+#   Humedad: {{ observation.humidity_1 }}% (max.), {{ observation.humidity_2 }}% (min.)
+{% else -%}
+{% endif -%}{% if observation.weather is defined -%}
+#   Cielo: {{ observation.weather  }}
+{% endif -%}
+{% if observation.comment is defined -%}
 #   Comentario: {{ observation.comment  }}
+{% endif -%}
 # END OF HEADER
 
