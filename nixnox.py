@@ -34,18 +34,13 @@ import pytz
 # Module constants
 # ----------------
 
-UNKNOWN = "Unknown"
-
 DEFAULT_DBASE = "nixnox.db"
 DEFAULT_TMPLT = "./IDA-template.j2"
 DEFAULT_DIR   = "."
-DEFAULT_MONTH = datetime.datetime.utcnow().strftime("%Y-%m")
 
-TSTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S.000"
-
-# -----------------------
-# Module global functions
-# -----------------------
+# ------------------
+# Auxiliar functions
+# -------------------
 
 def createParser():
     # create the top-level parser
@@ -54,11 +49,6 @@ def createParser():
     parser.add_argument('-t', '--template', default=DEFAULT_TMPLT, help='Jinja2 template file path')
     parser.add_argument('-o', '--out_dir', default=DEFAULT_DIR, help='Output directory to dump record')
     return parser
-
-
-# ------------------
-# Auxiliar functions
-# -------------------
 
 # ------------------
 # DATABASE FUNCTIONS
@@ -82,7 +72,7 @@ def result_generator(cursor, arraysize=500):
 
 
 def fetch_observations(connection, options):
-    '''From start of month at midnight UTC'''
+    '''We return the cursor for a generator later on'''
     cursor = connection.cursor()
     cursor.execute(
         '''
@@ -92,11 +82,13 @@ def fetch_observations(connection, options):
         ''')
     return cursor
 
+
 def get_observation(resultset):
     keys = ['observation_id', 'site_id', 'observer_id', 'flags_id', 'photometer_id', 'start_date_id', 'start_time_id',
         'end_date_id','end_time_id','temperature_1','temperature_2','humidity_1', 'humidity_2', 'weather',
         'other_observers','comment','image_url','image','plot']
     return  { k: v for k, v in dict(zip(keys,resultset)).items() if v is not None}
+
 
 def get_readings1(connection, observation_id):
     cursor = connection.cursor()
@@ -111,6 +103,7 @@ def get_readings1(connection, observation_id):
     result = cursor.fetchall()
     keys = ['altitude','azimuth','magnitude']
     return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
+
 
 def get_readings2(connection, observation_id):
     cursor = connection.cursor()
@@ -128,6 +121,7 @@ def get_readings2(connection, observation_id):
     keys = ['altitude','azimuth','magnitude','tsky','timestamp']
     return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
 
+
 def get_readings(connection, observation_id, flags):
     if flags['timestamp_method'] == "Individual readings timestamp":
         return get_readings2(connection, observation_id)
@@ -142,12 +136,12 @@ def get_observer(connection, observer_id):
         '''
         SELECT name, surname, nickname, organization
         FROM  observer_t
-        WHERE valid_state == "Current"
-        AND   observer_id == :observer_id
+        WHERE observer_id == :observer_id
         ''', row)
     result = cursor.fetchone()
     keys = ['name','surname', 'nickname', 'organization']
     return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
+
 
 def get_photometer(connection, photometer_id):
     cursor = connection.cursor()
@@ -156,13 +150,13 @@ def get_photometer(connection, photometer_id):
         '''
         SELECT model, serial_number, tag, fov, zero_point
         FROM  photometer_t
-        WHERE valid_state == "Current"
-        AND   photometer_id == :photometer_id
+        WHERE photometer_id == :photometer_id
         ''', row)
     result = cursor.fetchone()
     keys = ['model','serial_number','tag','fov','zero_point']
     return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
-    
+ 
+
 def get_site(connection, site_id):
     cursor = connection.cursor()
     row = {'site_id': site_id}
@@ -217,57 +211,10 @@ def get_flags(connection, flags_id):
     result = cursor.fetchone()
     keys = ['timestamp_method', 'temperature_method', 'humidity_method']
     return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
-
-
-# -------------------
-# AUXILIARY FUNCTIONS
-# -------------------
-
-
-
-def mkmonth(datestr):
-    return datetime.datetime.strptime(datestr, '%Y-%m')
-
-
-def render(template_path, context):
-    if not os.path.exists(template_path):
-        raise IOError("No Jinja2 template file found at {0}. Exiting ...".format(template_path))
-    path, filename = os.path.split(template_path)
-    return jinja2.Environment(
-        loader=jinja2.FileSystemLoader(path or './')
-    ).get_template(filename).render(context)
-
-
-def create_directories(instrument_name, out_dir, year=None):
-    sub_dir = os.path.join(out_dir, instrument_name)
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-    if not os.path.exists(sub_dir):
-        os.makedirs(sub_dir)
    
 # -------------------
 # FILE Generation
 # -------------------
-
-def write_NXNX_header_file(result, instrument_name, out_dir, timestamp, suffix):
-    '''Writes the IDA header file after contained in result'''
-    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".txt"
-    full_name = os.path.join(out_dir, instrument_name, file_name)
-    if sys.version_info[0] > 2:
-        result = result.decode('utf-8')
-    with open(full_name, 'w') as outfile:
-        outfile.write(result)
-
-def write_NXNX_body_file(result, instrument_name, out_dir, timestamp, suffix):
-    file_name = instrument_name + timestamp.strftime("_%Y-%m") + suffix + ".txt"
-    full_name = os.path.join(out_dir, instrument_name, file_name)
-    with open(full_name, 'a') as outfile:
-        outfile.write(result)
-        outfile.write('\n')
-
-# -------------
-# MAIN FUNCTION
-# -------------
 
 def get_context(connection, observation_resultset):
     context = {}
@@ -289,13 +236,41 @@ def get_context(connection, observation_resultset):
     return context
 
 
-def read_all(connection, options):
+def render(template_path, context):
+    if not os.path.exists(template_path):
+        raise IOError("No Jinja2 template file found at {0}. Exiting ...".format(template_path))
+    path, filename = os.path.split(template_path)
+    return jinja2.Environment(
+        loader=jinja2.FileSystemLoader(path or './')
+    ).get_template(filename).render(context)
+
+
+def write_file(output, options, context):
+    '''Writes the IDA header file after contained in result'''
+    file_name_parts = [
+        context['site']['site'], 
+        "{0:04d}".format(context['observation']['observer_id']), 
+        str(context['observation']['start_date_id']) ,
+    ]
+    file_name = '_'.join(file_name_parts) + ".txt"
+    print(file_name)
+    full_name = os.path.join(options.out_dir, file_name)
+    if sys.version_info[0] > 2:
+        output = output.decode('utf-8')
+    with open(full_name, 'wb') as outfile:
+        outfile.write(output)
+
+
+def generate(connection, options):
     cursor = fetch_observations(connection, options)
     for observation_resultset in result_generator(cursor):
         context = get_context(connection, observation_resultset)
         output = render(options.template, context)
-        print(output)
-        
+        write_file(output, options, context)
+
+# -------------
+# MAIN FUNCTION
+# -------------
 
 def main():
     '''
@@ -303,9 +278,10 @@ def main():
     '''
     try:
         options = createParser().parse_args(sys.argv[1:])
+        if not os.path.exists(options.out_dir):
+            os.makedirs(options.out_dir)
         connection = open_database(options.dbase)
-        read_all(connection, options)
-
+        generate(connection, options)
     except KeyboardInterrupt:
         print('Interrupted by user ^C')
     #except Exception as e:
