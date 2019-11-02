@@ -109,6 +109,8 @@ def get_observer(connection, observer_id):
         ''', row)
     result = cursor.fetchone()
     keys = ['name','surname', 'nickname', 'organization']
+    print(result)
+    print(type(result))
     return dict(zip(keys,result))
 
 def get_photometer(connection, photometer_id):
@@ -149,8 +151,6 @@ def get_date(connection, date_id):
         WHERE date_id == :date_id
         ''', row)
     result = cursor.fetchone()
-    print(result)
-    print(type(result))
     keys = ['date']
     return dict(zip(keys,result))
 
@@ -167,6 +167,7 @@ def get_time(connection, time_id):
     result = cursor.fetchone()
     keys = ['time']
     return dict(zip(keys,result))
+
 
 def get_flags(connection, flags_id):
     cursor = connection.cursor()
@@ -256,19 +257,10 @@ def get_context(connection, observation_resultset):
     context['site'] = get_site(connection, observation['site_id'])
     context['observer'] = get_observer(connection, observation['observer_id'])
     context['photometer'] = get_photometer(connection, observation['photometer_id'])
-    context['flags'] = get_observer(connection, observation['flags_id'])
+    context['flags'] = get_flags(connection, observation['flags_id'])
     # Optional items
     context['end_date'] = get_date(connection, observation['end_date_id']) if observation['end_date_id'] is not None else None
-    context['end_time'] = get_date(connection, observation['end_time_id']) if observation['end_time_id'] is not None else None
-    context['temperature_1'] = get_date(connection, observation['temperature_1']) if observation['temperature_1'] is not None else None
-    context['temperature_2'] = get_date(connection, observation['temperature_2']) if observation['temperature_2'] is not None else None
-    context['humidity_1'] = get_date(connection, observation['humidity_1']) if observation['humidity_1'] is not None else None
-    context['humidity_2'] = get_date(connection, observation['humidity_2']) if observation['humidity_2'] is not None else None
-    context['other_observers'] = get_date(connection, observation['other_observers']) if observation['other_observers'] is not None else None
-    context['comment'] = get_date(connection, observation['comment']) if observation['comment'] is not None else None
-    context['image_url'] = get_date(connection, observation['image_url']) if observation['image_url'] is not None else None
-    context['image'] = get_date(connection, observation['image']) if observation['image'] is not None else None
-    context['plot'] = get_date(connection, observation['plot']) if observation['plot'] is not None else None
+    context['end_time'] = get_time(connection, observation['end_time_id']) if observation['end_time_id'] is not None else None
     return context
 
 
