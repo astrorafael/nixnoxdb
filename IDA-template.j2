@@ -21,26 +21,26 @@
 #   Pais:         {{ site.country }}
 #   Zona horaria: {{ site.timezone }}
 # Fecha y Hora:
-{% if start_date is defined -%}
-#   Comienzo:     {{ start_date.date }}T{{ start_time.time }}
+{% if observation.start_date is defined -%}
+#   Comienzo:     {{ observation.start_date.date }} {{ observation.start_time.time }} UTC
 {% endif -%}
 {% if end_date is defined -%}
-#   Final:        {{ end_date.date }}T{{ end_date.time }}
+#   Final:        {{ observation.end_date.date }} {{ observation.end_time.time }} UTC
 {% endif -%}
 # Otros datos de la observacion:
-{% if temperature is defined -%}
-#   Temperatura:  {{ temperature }} ºC
-{% elif temperature_initial is defined -%}
-#   Temperatura:  {{ temperature_initial }} ºC (inicio), {{ temperature_final }} ºC (fin)
-{% elif temperature_max -%}
-#   Temperatura:  {{ temperature_max }} ºC (max.), {{ temperature_max }} ºC (min.)
+{% if observation.temperature is defined -%}
+#   Temperatura:  {{ observation.temperature }} ºC
+{% elif observation.temperature_initial is defined -%}
+#   Temperatura:  {{ observation.temperature_initial }} ºC (inicio), {{ observation.temperature_final }} ºC (fin)
+{% elif observation.temperature_max is defined -%}
+#   Temperatura:  {{ observation.temperature_max }} ºC (max.), {{ observation.temperature_max }} ºC (min.)
 {% endif -%}
-{% if humidity is defined -%}
-#   Humedad:      {{ humidity }} %
-{% elif humidity_initial is defined -%}
-#   Humedad:      {{ humidity_initial }}% (inicio), {{ humidity_final }}% (fin)
-{% elif humidity_max is defined -%}
-#   Humedad:     {{ humidity_max }} % (max.), {{ humidity_min }} % (min.)
+{% if observation.humidity is defined -%}
+#   Humedad:      {{ observation.humidity }} %
+{% elif observation.humidity_initial is defined -%}
+#   Humedad:      {{ observation.humidity_initial }}% (inicio), {{ observation.humidity_final }}% (fin)
+{% elif observation.humidity_max is defined -%}
+#   Humedad:      {{ observation.humidity_max }} % (max.), {{ observation.humidity_min }} % (min.)
 {% endif -%} 
 {% if observation.weather is defined -%}
 #   Cielo:        {{ observation.weather  }}

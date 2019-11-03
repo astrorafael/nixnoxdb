@@ -220,42 +220,42 @@ def get_context(connection, observation_resultset):
     context = {}
     observation = get_observation(observation_resultset)
     # Mandatory items
-    context['observation'] = observation
-    context['flags']       = get_flags(connection, observation['flags_id'])
-    context['site']        = get_site(connection, observation['site_id'])
-    context['observer']    = get_observer(connection, observation['observer_id'])
+    context['flags']       = get_flags(connection,      observation['flags_id'])
+    context['site']        = get_site(connection,       observation['site_id'])
+    context['observer']    = get_observer(connection,   observation['observer_id'])
     context['photometer']  = get_photometer(connection, observation['photometer_id'])
-    context['readings'] = get_readings(connection, observation['observation_id'], context['flags'])
-    # Deals with tiemstamps
+    context['readings']    = get_readings(connection,   observation['observation_id'], context['flags'])
+    # Deals with timestamps
     if context['flags']['timestamp_method'] == "Start timestamp only":
-        context['start_date'] = get_date(connection, observation['date_1_id'])
-        context['start_time'] = get_time(connection, observation['time_1_id'])
+        observation['start_date'] = get_date(connection, observation['date_1_id'])
+        observation['start_time'] = get_time(connection, observation['time_1_id'])
     elif context['flags']['timestamp_method'] == "End timestamp only":
-        context['end_date']   = get_date(connection, observation['date_1_id'])
-        context['end_time']   = get_time(connection, observation['time_1_id'])
+        observation['end_date']   = get_date(connection, observation['date_1_id'])
+        observation['end_time']   = get_time(connection, observation['time_1_id'])
     else:
-        context['start_date'] = get_date(connection, observation['date_1_id'])
-        context['start_time'] = get_time(connection, observation['time_1_id'])
-        context['end_date']   = get_date(connection, observation['date_2_id'])
-        context['end_time']   = get_time(connection, observation['time_2_id'])
+        observation['start_date'] = get_date(connection, observation['date_1_id'])
+        observation['start_time'] = get_time(connection, observation['time_1_id'])
+        observation['end_date']   = get_date(connection, observation['date_2_id'])
+        observation['end_time']   = get_time(connection, observation['time_2_id'])
     # Deals with temperatures
     if context['flags']['temperature_method'] == "Unique temperatures measurement":
-        context['temperature'] = observation['temperature_1']
+        observation['temperature'] = observation['temperature_1']
     elif context['flags']['temperature_method'] == "Initial & Final temperatures":
-        context['temperature_initial'] = observation['temperature_1']
+        observation['temperature_initial'] = observation['temperature_1']
         context['temperature_final']   = observation['temperature_2']
     elif context['flags']['temperature_method'] == "Max & Min temperatures":
-        context['temperature_max'] = observation['temperature_1']
-        context['temperature_min'] = observation['temperature_2']
+        observation['temperature_max'] = observation['temperature_1']
+        observation['temperature_min'] = observation['temperature_2']
     # Deals with humidities
     if context['flags']['humidity_method'] == "Unique humidity measurement":
-        context['humidity'] = observation['humidity_1']
+        observation['humidity'] = observation['humidity_1']
     elif context['flags']['humidity_method'] == "Initial & Final humidities":
-        context['humidity_initial'] = observation['humidity_1']
-        context['humidityfinal']    = observation['humidity_2']
+        observation['humidity_initial'] = observation['humidity_1']
+        observation['humidityfinal']    = observation['humidity_2']
     elif context['flags']['humidity_method'] == "Max & Min humidities":
-        context['humidity_max'] = observation['humidity_1']
-        context['humidity_min'] = observation['humidity_2']
+        observation['humidity_max'] = observation['humidity_1']
+        observation['humidity_min'] = observation['humidity_2']
+    context['observation'] = observation
     return context
 
 
