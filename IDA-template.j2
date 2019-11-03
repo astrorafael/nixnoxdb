@@ -7,7 +7,7 @@
 {% endif -%}
 # Fotometro: 
 #   Modelo:          {{ photometer.model }}
-#   Identificador:   {{ photometer.serial_number }}
+#   Identificador:   {{ photometer.serial_number }} {%- if photometer.serial_number is defined %} ({{ photometer.tag }}){% endif %}
 {% if photometer.fov is defined -%}
 #   Campo de vision: {{ photometer.fov }}
 {% endif -%}
@@ -24,7 +24,7 @@
 {% if observation.start_date is defined -%}
 #   Comienzo:     {{ observation.start_date.date }} {{ observation.start_time.time }} UTC
 {% endif -%}
-{% if end_date is defined -%}
+{% if observation.end_date is defined -%}
 #   Final:        {{ observation.end_date.date }} {{ observation.end_time.time }} UTC
 {% endif -%}
 # Otros datos de la observacion:
