@@ -126,7 +126,7 @@ def get_readings2(connection, observation_id):
     row = {'observation_id': observation_id}
     cursor.execute(
         '''
-        SELECT r.altitude, r.azimuth, r.magnitude, r.tsky, d.date, t.time, d.sql_date || 'T' || t.time || 'Z') AS timestamp,
+        SELECT r.altitude, r.azimuth, r.magnitude, r.tsky, r.date_id, r.time_id, d.sql_date || 'T' || t.time || 'Z') AS timestamp,
         FROM readings_t AS r
         JOIN date_t     AS d USING (date_id)
         JOIN time_t     AS t USING (time_id) 
@@ -134,7 +134,7 @@ def get_readings2(connection, observation_id):
         ORDER BY r.altitude ASC, r.azimuth ASC
         ''', row)
     result = cursor.fetchall()
-    keys = ['altitude','azimuth','magnitude','tsky','date','time','timestamp']
+    keys = ['altitude','azimuth','magnitude','tsky','date_id','time_id','timestamp']
     return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
 
 
@@ -256,12 +256,13 @@ def get_context(connection, observation_resultset):
         observation['start_time'] = get_time(connection, observation['time_1_id'])
         observation['end_date']   = get_date(connection, observation['date_2_id'])
         observation['end_time']   = get_time(connection, observation['time_2_id'])
-    else:
-        timestamps = sort([ item for item in context['readings']], key = lambda x: x['timestamp'])
-        observation['start_date'] = timestamps[0]['date']
-        observation['start_time'] = timestamps[0]['time']
-        observation['end_date']   = timestamps[-1]['date']
-        observation['end_time']   = timestamps[-1]['time']
+    else:   # Extract start & end timestamps from individual timestamps
+        readings = list(context['readings'])    # Copy list
+        readings.sort(key = lambda x: x['timestamp'])
+        observation['start_date'] = get_date(connection, readings[0]['date_id'])
+        observation['start_time'] = get_time(connection, readings[0]['time_id'])
+        observation['end_date']   = get_date(connection, readings[-1]['date_id'])
+        observation['end_time']   = get_time(connection, readings[-1]['time_id'])
 
     # Deals with temperatures
     if context['flags']['temperature_method'] == UNIQUE_TEMPERATURE_MEASUREMENT:
