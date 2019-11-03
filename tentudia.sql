@@ -9,7 +9,7 @@ VALUES(
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Manolo" AND o.surname = "Barco"),
 	(SELECT site_id         FROM site_t             WHERE site = "Monasterio de Tentudia"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Felipe" AND surname = "Gallego"),
-	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start timestamp only" AND temperature_method = "Unique temperatures measurement" AND humidity_method = "Unique humidity measurement"),
+	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start timestamp only" AND temperature_method = "Unique temperature measurement" AND humidity_method = "Unique humidity measurement"),
 	24,
 	74
 );
