@@ -8,7 +8,7 @@ INSERT INTO observation_t(date_1_id,time_1_id,date_2_id,time_2_id,photometer_id,
 VALUES(
 	20120518, 232700,     -- date 1 & time 1 ids are start date & time
 	20120519, 014700,     -- date 2 & time 2 ids are end date & time
-	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Manolo" AND o.surname = "Barco"),
+	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Jesús" AND o.surname = "Navas Fernández"),
 	(SELECT site_id         FROM site_t             WHERE site = "Venta de la Leche"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Jesús" AND surname = "Navas Fernández"),
 	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "Unique temperature measurement" AND humidity_method = "Max & Min humidities"),

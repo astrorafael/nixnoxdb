@@ -7,7 +7,7 @@
 {% endif -%}
 # Fotometro: 
 #   Modelo:          {{ photometer.model }}
-#   Identificador:   {{ photometer.serial_number }} {%- if photometer.serial_number is defined %} ({{ photometer.tag }}){% endif %}
+#   Identificador:   {{ photometer.serial_number }} {%- if photometer.tag is defined %} ({{ photometer.tag }}){% endif %}
 {% if photometer.fov is defined -%}
 #   Campo de vision: {{ photometer.fov }}
 {% endif -%}
