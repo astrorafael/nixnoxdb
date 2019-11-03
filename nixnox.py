@@ -260,13 +260,12 @@ def get_context(connection, observation_resultset):
         observation['start_time'] = get_time(connection, readings[0]['time_id'])
         observation['end_date']   = get_date(connection, readings[-1]['date_id'])
         observation['end_time']   = get_time(connection, readings[-1]['time_id'])
-
     # Deals with temperatures
     if context['flags']['temperature_method'] == UNIQUE_TEMPERATURE_MEASUREMENT:
         observation['temperature'] = observation['temperature_1']
     elif context['flags']['temperature_method'] == INITIAL_AND_FINAL_TEMPERATURES:
         observation['temperature_initial'] = observation['temperature_1']
-        context['temperature_final']   = observation['temperature_2']
+        observation['temperature_final']   = observation['temperature_2']
     elif context['flags']['temperature_method'] == MAX_AND_MIN_TEMPERATURES:
         observation['temperature_max'] = observation['temperature_1']
         observation['temperature_min'] = observation['temperature_2']
@@ -279,6 +278,9 @@ def get_context(connection, observation_resultset):
     elif context['flags']['humidity_method'] == MAX_AND_MIN_HUMIDITIES:
         observation['humidity_max'] = observation['humidity_1']
         observation['humidity_min'] = observation['humidity_2']
+    # Strip new lines from comments
+    if 'comment' in observation:
+        observation['comment'].replace('\n',' ')
     context['observation'] = observation
     return context
 
