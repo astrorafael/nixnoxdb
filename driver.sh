@@ -1,24 +1,24 @@
 #!/bin/bash
 rm -fr nixnox.db
 sqlite3 nixnox.db <<EOF
-.read schema.sql
+.read sql/schema.sql
 --------------
 -- Dimensiones
 --------------
-.read date.sql
-.read time.sql
-.read flags.sql
-.read site.sql
-.read observer.sql
-.read photometer.sql
+.read sql/date.sql
+.read sql/time.sql
+.read sql/flags.sql
+.read sql/site.sql
+.read sql/observer.sql
+.read sql/photometer.sql
 ----------------
 -- Observaciones
 ----------------
-.read guirguillano.sql
-.read sant_pau_de_pinos.sql
-.read virgen_de_las_veredas.sql
-.read venta_de_la_leche.sql
-.read tentudia.sql
+.read sql/guirguillano.sql
+.read sql/sant_pau_de_pinos.sql
+.read sql/virgen_de_las_veredas.sql
+.read sql/venta_de_la_leche.sql
+.read sql/tentudia.sql
 SELECT * FROM observation_t;
 EOF
 sqlite3 nixnox.db

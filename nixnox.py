@@ -232,9 +232,6 @@ def get_flags(connection, flags_id):
 # FILE Generation
 # -------------------
 
-def sortByTimestamp(item):
-    return item['timestamp']
-
 def get_context(connection, observation_resultset):
     context = {}
     observation = get_observation(observation_resultset)
@@ -303,7 +300,6 @@ def write_file(output, options, context):
         str(context['observation']['date_1_id']) ,
     ]
     file_name = '_'.join(file_name_parts) + ".txt"
-    print(file_name)
     full_name = os.path.join(options.out_dir, file_name)
     if sys.version_info[0] > 2:
         output = output.decode('utf-8')
