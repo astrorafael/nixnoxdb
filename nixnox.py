@@ -36,7 +36,23 @@ import pytz
 
 DEFAULT_DBASE = "nixnox.db"
 DEFAULT_TMPLT = "./IDA-template.j2"
-DEFAULT_DIR   = "."
+DEFAULT_DIR   = "reports"
+
+# These strinsg msut match those in the database, table flags_t
+NO_TEMPERATURES_KNOWN          = "No temperatures known"
+INITIAL_AND_FINAL_TEMPERATURES = "Initial & Final temperatures"
+MAX_AND_MIN_TEMPERATURES       = "Max & Min temperatures"
+UNIQUE_TEMPERATURE_MEASUREMENT = "Unique temperature measurement"
+
+NO_HUMIDITY_KNOWN              = "No humidity known"
+INITIAL_AND_FINAL_HUMIDITIES   = "Initial & Final humidities"
+MAX_AND_MIN_HUMIDITIES         = "Max & Min humidities"
+UNIQUE_HUMIDITY_MEASUREMENT    = "Unique humidity measurement"
+
+START_AND_END_TIMESTAMP        = "Start & end timestamp"
+START_TIMESTAMP_ONLY           = "Start timestamp only"
+END_TIMESTAMP_ONLY             = "End timestamp only"
+INDIVIDUAL_READINGS_TIMESTAMP  = "Individual readings timestamp"
 
 # ------------------
 # Auxiliar functions
@@ -110,7 +126,7 @@ def get_readings2(connection, observation_id):
     row = {'observation_id': observation_id}
     cursor.execute(
         '''
-        SELECT r.altitude, r.azimuth, r.magnitude, r.tsky, d.sql_date || 'T' || t.time || 'Z') AS timestamp,
+        SELECT r.altitude, r.azimuth, r.magnitude, r.tsky, d.date, t.time, d.sql_date || 'T' || t.time || 'Z') AS timestamp,
         FROM readings_t AS r
         JOIN date_t     AS d USING (date_id)
         JOIN time_t     AS t USING (time_id) 
@@ -118,7 +134,7 @@ def get_readings2(connection, observation_id):
         ORDER BY r.altitude ASC, r.azimuth ASC
         ''', row)
     result = cursor.fetchall()
-    keys = ['altitude','azimuth','magnitude','tsky','timestamp']
+    keys = ['altitude','azimuth','magnitude','tsky','date','time','timestamp']
     return [ { k: v for k, v in dict(zip(keys,item)).items() if v is not None} for item in result ]
 
 
@@ -216,6 +232,9 @@ def get_flags(connection, flags_id):
 # FILE Generation
 # -------------------
 
+def sortByTimestamp(item):
+    return item['timestamp']
+
 def get_context(connection, observation_resultset):
     context = {}
     observation = get_observation(observation_resultset)
@@ -226,33 +245,40 @@ def get_context(connection, observation_resultset):
     context['photometer']  = get_photometer(connection, observation['photometer_id'])
     context['readings']    = get_readings(connection,   observation['observation_id'], context['flags'])
     # Deals with timestamps
-    if context['flags']['timestamp_method'] == "Start timestamp only":
+    if context['flags']['timestamp_method'] == START_TIMESTAMP_ONLY:
         observation['start_date'] = get_date(connection, observation['date_1_id'])
         observation['start_time'] = get_time(connection, observation['time_1_id'])
-    elif context['flags']['timestamp_method'] == "End timestamp only":
+    elif context['flags']['timestamp_method'] == END_TIMESTAMP_ONLY:
         observation['end_date']   = get_date(connection, observation['date_1_id'])
         observation['end_time']   = get_time(connection, observation['time_1_id'])
-    else:
+    elif context['flags']['timestamp_method'] == START_AND_END_TIMESTAMP:
         observation['start_date'] = get_date(connection, observation['date_1_id'])
         observation['start_time'] = get_time(connection, observation['time_1_id'])
         observation['end_date']   = get_date(connection, observation['date_2_id'])
         observation['end_time']   = get_time(connection, observation['time_2_id'])
+    else:
+        timestamps = sort([ item for item in context['readings']], key = lambda x: x['timestamp'])
+        observation['start_date'] = timestamps[0]['date']
+        observation['start_time'] = timestamps[0]['time']
+        observation['end_date']   = timestamps[-1]['date']
+        observation['end_time']   = timestamps[-1]['time']
+
     # Deals with temperatures
-    if context['flags']['temperature_method'] == "Unique temperatures measurement":
+    if context['flags']['temperature_method'] == UNIQUE_TEMPERATURE_MEASUREMENT:
         observation['temperature'] = observation['temperature_1']
-    elif context['flags']['temperature_method'] == "Initial & Final temperatures":
+    elif context['flags']['temperature_method'] == INITIAL_AND_FINAL_TEMPERATURES:
         observation['temperature_initial'] = observation['temperature_1']
         context['temperature_final']   = observation['temperature_2']
-    elif context['flags']['temperature_method'] == "Max & Min temperatures":
+    elif context['flags']['temperature_method'] == MAX_AND_MIN_TEMPERATURES:
         observation['temperature_max'] = observation['temperature_1']
         observation['temperature_min'] = observation['temperature_2']
     # Deals with humidities
-    if context['flags']['humidity_method'] == "Unique humidity measurement":
+    if context['flags']['humidity_method'] == UNIQUE_HUMIDITY_MEASUREMENT:
         observation['humidity'] = observation['humidity_1']
-    elif context['flags']['humidity_method'] == "Initial & Final humidities":
+    elif context['flags']['humidity_method'] == INITIAL_AND_FINAL_HUMIDITIES:
         observation['humidity_initial'] = observation['humidity_1']
         observation['humidityfinal']    = observation['humidity_2']
-    elif context['flags']['humidity_method'] == "Max & Min humidities":
+    elif context['flags']['humidity_method'] == MAX_AND_MIN_HUMIDITIES:
         observation['humidity_max'] = observation['humidity_1']
         observation['humidity_min'] = observation['humidity_2']
     context['observation'] = observation
