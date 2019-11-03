@@ -5,10 +5,10 @@ CREATE TEMP TABLE IF NOT EXISTS Variables (Name TEXT PRIMARY KEY, Value TEXT);
 
 -- # FECHA	24/03/2012
 -- # HORA INICIO	01:00	# HORA FINAL 	02:41	
-INSERT INTO observation_t(start_date_id,start_time_id,end_date_id,end_time_id,photometer_id,site_id,observer_id,flags_id,temperature_1, temperature_2,humidity_1,humidity_2,weather,comment)
+INSERT INTO observation_t(date_1_id,time_1_id,date_2_id,time_2_id,photometer_id,site_id,observer_id,flags_id,temperature_1, temperature_2,humidity_1,humidity_2,weather,comment)
 VALUES(
-	20110827, 000900,
-	20110827, 015300,
+	20110827, 000900,	-- date 1 & time 1 ids are start date & time
+	20110827, 015300,   -- date 2 & time 2 ids are end date & time
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Jordi" AND o.surname = "Medina"),
 	(SELECT site_id         FROM site_t             WHERE site = "Sant Pau de Pinós"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Jordi" AND surname = "Medina"),

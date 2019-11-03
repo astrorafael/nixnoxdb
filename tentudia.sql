@@ -3,9 +3,9 @@ BEGIN TRANSACTION;
 
 CREATE TEMP TABLE IF NOT EXISTS Variables (Name TEXT PRIMARY KEY, Value TEXT);						
 
-INSERT INTO observation_t(start_date_id,start_time_id,photometer_id,site_id,observer_id,flags_id,temperature_1,humidity_1)
+INSERT INTO observation_t(date_1_id,time_1_id,photometer_id,site_id,observer_id,flags_id,temperature_1,humidity_1)
 VALUES(
-	20140614, 003000,
+	20140614, 003000, -- date 1 & time 1 ids are start date & time
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Manolo" AND o.surname = "Barco"),
 	(SELECT site_id         FROM site_t             WHERE site = "Monasterio de Tentudia"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Felipe" AND surname = "Gallego"),

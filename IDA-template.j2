@@ -1,53 +1,52 @@
 # FICHA DE OBSERVACION
 # Observador:
-#   Nombre:  {{ observer.name }} {{ observer.surname }} 
+#   Nombre:       {{ observer.name }} {{ observer.surname }} 
 #   Organizacion: {{ observer.organization  }}
+{% if observation.other_observers is defined -%}
 # Observadores adicionales: {{ observation.other_observers  }}
+{% endif -%}
 # Fotometro: 
-#   Modelo: {{ photometer.model }}
-#   Identificador: {{ photometer.serial_number }}
+#   Modelo:          {{ photometer.model }}
+#   Identificador:   {{ photometer.serial_number }}
+{% if photometer.fov is defined -%}
 #   Campo de vision: {{ photometer.fov }}
+{% endif -%}
 # Sitio:
-#   Nombre: {{ site.site }}
-#   Coordenadas: {{ site.latitude }}, {{ site.longitude }}
-#   Altitud: {{ site.altitude }} m
-#   Municipio:  {{ site.location }}
-#   Provincia: {{ site.province }}
-#   Comunidad: {{ site.region }}
-#   Pais: {{ site.country }}
+#   Nombre:       {{ site.site }}
+#   Coordenadas:  {{ site.latitude }}, {{ site.longitude }}
+#   Altitud:      {{ site.altitude }} m
+#   Municipio:    {{ site.location }}
+#   Provincia:    {{ site.province }}
+#   Comunidad:    {{ site.region }}
+#   Pais:         {{ site.country }}
 #   Zona horaria: {{ site.timezone }}
 # Fecha y Hora:
-{% if flags.timestamp_method == "Start & end timestamp" -%}
-#   Comienzo: {{ start_date.date }} {{ start_time.time }}
-#   Final:    {{ end_date.date }} {{ end_date.time }}
-{% elif flags.timestamp_method == "Start timestamp only" -%}
-#   Comienzo: {{ start_date.date }} {{ start_time.time }}
-{% elif flags.timestamp_method == "End timestamp only" -%}
-# NOT YET IMPLEMENTED
-{% else -%}
-# NOT YET IMPLEMENTED
+{% if start_date is defined -%}
+#   Comienzo:     {{ start_date.date }}T{{ start_time.time }}
+{% endif -%}
+{% if end_date is defined -%}
+#   Final:        {{ end_date.date }}T{{ end_date.time }}
 {% endif -%}
 # Otros datos de la observacion:
-{% if flags.temperatures_method == "Unique temperatures measurement" -%}
-#   Temperatura: {{ observation.temperature_1 }}
-{% elif flags.temperatures_method == "Initial & Final temperatures" -%}
-#   Temperatura: {{ observation.temperature_1 }} (inicio), {{ observation.temperature_2 }} (fin)
-{% elif flags.temperatures_method == "Max & Min temperatures" %}
-#   Temperatura: {{ observation.temperature_1 }} (max.), {{ observation.temperature_2 }} (min.)
-{% else -%}
+{% if temperature is defined -%}
+#   Temperatura:  {{ temperature }} ºC
+{% elif temperature_initial is defined -%}
+#   Temperatura:  {{ temperature_initial }} ºC (inicio), {{ temperature_final }} ºC (fin)
+{% elif temperature_max -%}
+#   Temperatura:  {{ temperature_max }} ºC (max.), {{ temperature_max }} ºC (min.)
 {% endif -%}
-{% if flags.humidity_method == "Unique humidity measurement" -%}
-#   Humedad:  {{ observation.humidity_1 }}%
-{% elif flags.humidity_method == "Initial & Final humidities" -%}
-#   Humedad: {{ observation.humidity_1 }}% (inicio), {{ observation.humidity_2 }}% (fin)
-{% elif flags.humidity_method == "Max & Min humidities" %}
-#   Humedad: {{ observation.humidity_1 }}% (max.), {{ observation.humidity_2 }}% (min.)
-{% else -%}
-{% endif -%}{% if observation.weather is defined -%}
-#   Cielo: {{ observation.weather  }}
+{% if humidity is defined -%}
+#   Humedad:      {{ humidity }} %
+{% elif humidity_initial is defined -%}
+#   Humedad:      {{ humidity_initial }}% (inicio), {{ humidity_final }}% (fin)
+{% elif humidity_max is defined -%}
+#   Humedad:     {{ humidity_max }} % (max.), {{ humidity_min }} % (min.)
+{% endif -%} 
+{% if observation.weather is defined -%}
+#   Cielo:        {{ observation.weather  }}
 {% endif -%}
 {% if observation.comment is defined -%}
-#   Comentario: {{ observation.comment  }}
+#   Comentario:   {{ observation.comment  }}
 {% endif -%}
 # altura;acimut;magnitud;temperatura_de_cielo;marca_de_tiempo
 # FIN DE CABECERA

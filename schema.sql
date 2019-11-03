@@ -17,8 +17,6 @@ CREATE TABLE IF NOT EXISTS date_t
 	year           INTEGER  -- Year (2000, 2001, ...)
 );
 
-CREATE VIEW IF NOT EXISTS start_date_v AS SELECT * FROM date_t;
-CREATE VIEW IF NOT EXISTS end_date_v   AS SELECT * FROM date_t;
 
 CREATE TABLE IF NOT EXISTS time_t
 (
@@ -29,9 +27,6 @@ CREATE TABLE IF NOT EXISTS time_t
 	second         INTEGER, -- second 00-59
 	day_fraction   REAL     -- time as a day fraction between 0 and 1
 );
-
-CREATE VIEW IF NOT EXISTS start_time_v AS SELECT * FROM time_t;
-CREATE VIEW IF NOT EXISTS end_time_v   AS SELECT * FROM time_t;
 
 
 CREATE TABLE IF NOT EXISTS photometer_t
@@ -95,25 +90,25 @@ CREATE TABLE IF NOT EXISTS flags_t
 
 CREATE TABLE IF NOT EXISTS observation_t
 ( 
-	site_id                  INTEGER NOT NULL REFERENCES site_t(site_id),
-	observer_id              INTEGER NOT NULL REFERENCES observer_t(observer_id),
-	flags_id                 INTEGER NOT NULL REFERENCES flags_t(flags_id),
-	photometer_id            INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
-	start_date_id   		 INTEGER NOT NULL REFERENCES start_date_v(date_id), 
-	start_time_id   		 INTEGER NOT NULL REFERENCES start_time_v(time_id),
-	end_date_id     		 INTEGER        L REFERENCES end_date_v(date_id), 
-	end_time_id      		 INTEGER          REFERENCES end_date_v(time_id), 
-	temperature_1            REAL, -- observation temperature 1 (see flags for details)
-	temperature_2            REAL, -- observation temperature 2 (see flags for details)
-	humidity_1               REAL, -- observation humidity 1    (see flags for details)
-	humidity_2               REAL, -- observation humidity 2    (see flags for details)
-	weather                  TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
-	other_observers          TEXT, -- free text for secondary observers            
-	comment          		 TEXT, -- free text fro comments
-	image_url        		 TEXT, -- Site image as an URL
-	image            		 BLOB, -- Site image as an embdeed picture
-	plot            		 BLOB, -- plot from readings
-	PRIMARY KEY (site_id,observer_id,start_date_id,start_time_id)
+	site_id         INTEGER NOT NULL REFERENCES site_t(site_id),
+	observer_id     INTEGER NOT NULL REFERENCES observer_t(observer_id),
+	flags_id        INTEGER NOT NULL REFERENCES flags_t(flags_id),
+	photometer_id   INTEGER NOT NULL REFERENCES photometer_t(photometer_id),
+	date_1_id       INTEGER NOT NULL REFERENCES date_t(date_id),  -- mandatory date (see flags for details)
+	time_1_id       INTEGER NOT NULL REFERENCES time_t(time_id),  -- mandatory time (see flags for details)
+	date_2_id       INTEGER        L REFERENCES date_t(date_id),  -- optional date (see flags for details)
+	time_2_id       INTEGER          REFERENCES time_t(time_id),  -- optional time (see flags for details)
+	temperature_1   REAL, -- observation temperature 1 (see flags for details)
+	temperature_2   REAL, -- observation temperature 2 (see flags for details)
+	humidity_1      REAL, -- observation humidity 1    (see flags for details)
+	humidity_2      REAL, -- observation humidity 2    (see flags for details)
+	weather         TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
+	other_observers TEXT, -- free text for secondary observers            
+	comment         TEXT, -- free text fro comments
+	image_url       TEXT, -- Site image as an URL
+	image           BLOB, -- Site image as an embdeed picture
+	plot            BLOB, -- plot from readings
+	PRIMARY KEY (site_id,observer_id,photometer_id,date_1_id,time_1_id)
 );
 
 CREATE TABLE IF NOT EXISTS readings_t

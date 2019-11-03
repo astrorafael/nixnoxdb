@@ -78,14 +78,14 @@ def fetch_observations(connection, options):
         '''
         SELECT rowid,*
         FROM observation_t
-        ORDER BY start_date_id ASC, start_time_id ASC
+        ORDER BY date_1_id ASC, time_1_id ASC
         ''')
     return cursor
 
 
 def get_observation(resultset):
-    keys = ['observation_id', 'site_id', 'observer_id', 'flags_id', 'photometer_id', 'start_date_id', 'start_time_id',
-        'end_date_id','end_time_id','temperature_1','temperature_2','humidity_1', 'humidity_2', 'weather',
+    keys = ['observation_id', 'site_id', 'observer_id', 'flags_id', 'photometer_id', 'date_1_id', 'time_1_id',
+        'date_2_id','time_2_id','temperature_1','temperature_2','humidity_1', 'humidity_2', 'weather',
         'other_observers','comment','image_url','image','plot']
     return  { k: v for k, v in dict(zip(keys,resultset)).items() if v is not None}
 
@@ -221,18 +221,41 @@ def get_context(connection, observation_resultset):
     observation = get_observation(observation_resultset)
     # Mandatory items
     context['observation'] = observation
-    context['start_date']  = get_date(connection, observation['start_date_id'])
-    context['start_time']  = get_time(connection, observation['start_time_id'])
+    context['flags']       = get_flags(connection, observation['flags_id'])
     context['site']        = get_site(connection, observation['site_id'])
     context['observer']    = get_observer(connection, observation['observer_id'])
     context['photometer']  = get_photometer(connection, observation['photometer_id'])
-    context['flags']       = get_flags(connection, observation['flags_id'])
-    # Optional items
-    if 'end_date_id' in observation:
-        context['end_date'] = get_date(connection, observation['end_date_id'])
-    if 'end_time_id' in observation:
-        context['end_time'] = get_time(connection, observation['end_time_id'])
     context['readings'] = get_readings(connection, observation['observation_id'], context['flags'])
+    # Deals with tiemstamps
+    if context['flags']['timestamp_method'] == "Start timestamp only":
+        context['start_date'] = get_date(connection, observation['date_1_id'])
+        context['start_time'] = get_time(connection, observation['time_1_id'])
+    elif context['flags']['timestamp_method'] == "End timestamp only":
+        context['end_date']   = get_date(connection, observation['date_1_id'])
+        context['end_time']   = get_time(connection, observation['time_1_id'])
+    else:
+        context['start_date'] = get_date(connection, observation['date_1_id'])
+        context['start_time'] = get_time(connection, observation['time_1_id'])
+        context['end_date']   = get_date(connection, observation['date_2_id'])
+        context['end_time']   = get_time(connection, observation['time_2_id'])
+    # Deals with temperatures
+    if context['flags']['temperature_method'] == "Unique temperatures measurement":
+        context['temperature'] = observation['temperature_1']
+    elif context['flags']['temperature_method'] == "Initial & Final temperatures":
+        context['temperature_initial'] = observation['temperature_1']
+        context['temperature_final']   = observation['temperature_2']
+    elif context['flags']['temperature_method'] == "Max & Min temperatures":
+        context['temperature_max'] = observation['temperature_1']
+        context['temperature_min'] = observation['temperature_2']
+    # Deals with humidities
+    if context['flags']['humidity_method'] == "Unique humidity measurement":
+        context['humidity'] = observation['humidity_1']
+    elif context['flags']['humidity_method'] == "Initial & Final humidities":
+        context['humidity_initial'] = observation['humidity_1']
+        context['humidityfinal']    = observation['humidity_2']
+    elif context['flags']['humidity_method'] == "Max & Min humidities":
+        context['humidity_max'] = observation['humidity_1']
+        context['humidity_min'] = observation['humidity_2']
     return context
 
 
@@ -250,7 +273,7 @@ def write_file(output, options, context):
     file_name_parts = [
         context['site']['site'], 
         "{0:04d}".format(context['observation']['observer_id']), 
-        str(context['observation']['start_date_id']) ,
+        str(context['observation']['date_1_id']) ,
     ]
     file_name = '_'.join(file_name_parts) + ".txt"
     print(file_name)
@@ -258,7 +281,8 @@ def write_file(output, options, context):
     if sys.version_info[0] > 2:
         output = output.decode('utf-8')
     with open(full_name, 'wb') as outfile:
-        outfile.write(output)
+        print(output)
+        ##outfile.write(output)
 
 
 def generate(connection, options):

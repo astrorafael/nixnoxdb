@@ -4,7 +4,7 @@ BEGIN TRANSACTION;
 CREATE TEMP TABLE IF NOT EXISTS Variables (Name TEXT PRIMARY KEY, Value TEXT);	
 
 
-INSERT INTO observation_t(start_date_id,start_time_id,end_date_id,end_time_id,photometer_id,site_id,observer_id,flags_id,temperature_1,humidity_1,humidity_2)
+INSERT INTO observation_t(date_1_id,time_1_id,date_2_id,time_2_id,photometer_id,site_id,observer_id,flags_id,temperature_1,humidity_1,humidity_2)
 VALUES(
 	20120824, 232700,
 	20160828, 014700,
