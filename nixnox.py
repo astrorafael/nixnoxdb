@@ -301,11 +301,8 @@ def write_file(output, options, context):
     ]
     file_name = '_'.join(file_name_parts) + ".txt"
     full_name = os.path.join(options.out_dir, file_name)
-    if sys.version_info[0] > 2:
-        output = output.decode('utf-8')
     with open(full_name, 'wb') as outfile:
-        print(output)
-        ##outfile.write(output)
+        outfile.write(output.encode('utf-8'))
 
 
 def generate(connection, options):
