@@ -6,12 +6,12 @@ CREATE TEMP TABLE IF NOT EXISTS Variables (Name TEXT PRIMARY KEY, Value TEXT);
 
 INSERT INTO observation_t(date_1_id,time_1_id,date_2_id,time_2_id,photometer_id,site_id,observer_id,flags_id,temperature_1,humidity_1,humidity_2)
 VALUES(
-	20120824, 232700,
-	20160828, 014700,
+	20120824, 232700,     -- date 1 & time 1 ids are start date & time
+	20160828, 014700,     -- date 2 & time 2 ids are end date & time
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Manolo" AND o.surname = "Barco"),
 	(SELECT site_id         FROM site_t             WHERE site = "Santuario Virgen de las veredas"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Manolo" AND surname = "Barco"),
-	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "Unique temperatures measurement" AND humidity_method = "Max & Min humidities"),
+	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "Unique temperature measurement" AND humidity_method = "Max & Min humidities"),
 	20,
 	40, 25
 );

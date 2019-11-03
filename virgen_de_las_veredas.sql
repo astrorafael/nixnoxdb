@@ -10,7 +10,7 @@ VALUES(
 	(SELECT p.photometer_id FROM photometer_owner_t as p JOIN observer_t as o USING (observer_id) WHERE o.name = "Manolo" AND o.surname = "Barco"),
 	(SELECT site_id         FROM site_t             WHERE site = "Santuario Virgen de las veredas"),
 	(SELECT observer_id     FROM observer_t         WHERE name = "Manolo" AND surname = "Barco"),
-	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "Unique temperatures measurement" AND humidity_method = "No humidity known"),
+	(SELECT flags_id        FROM flags_t            WHERE timestamp_method = "Start & end timestamp" AND temperature_method = "Unique temperature measurement" AND humidity_method = "No humidity known"),
 	24,
 	"Despejado",
 	"Caminata excesiva"

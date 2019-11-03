@@ -12,7 +12,7 @@ CREATE TEMP TABLE IF NOT EXISTS MapaH (Clave TEXT PRIMARY KEY, Valor INTEGER);
 INSERT INTO MapaT VALUES ("No temperatures known", 0);
 INSERT INTO MapaT VALUES ("Initial & Final temperatures", 1);
 INSERT INTO MapaT VALUES ("Max & Min temperatures", 2);
-INSERT INTO MapaT VALUES ("Unique temperatures measurement", 3);
+INSERT INTO MapaT VALUES ("Unique temperature measurement", 3);
 
 INSERT INTO MapaH VALUES ("No humidity known", 0);
 INSERT INTO MapaH VALUES ("Initial & Final humidities", 1);
@@ -87,20 +87,20 @@ COMMIT;
 -- 45|Start timestamp only|Max & Min temperatures|Unique humidity measurement
 -- 46|End timestamp only|Max & Min temperatures|Unique humidity measurement
 -- 47|Individual readings timestamp|Max & Min temperatures|Unique humidity measurement
--- 48|Start & end timestamp|Unique temperatures measurement|No humidity known
--- 49|Start timestamp only|Unique temperatures measurement|No humidity known
--- 50|End timestamp only|Unique temperatures measurement|No humidity known
--- 51|Individual readings timestamp|Unique temperatures measurement|No humidity known
--- 52|Start & end timestamp|Unique temperatures measurement|Initial & Final humidities
--- 53|Start timestamp only|Unique temperatures measurement|Initial & Final humidities
--- 54|End timestamp only|Unique temperatures measurement|Initial & Final humidities
--- 55|Individual readings timestamp|Unique temperatures measurement|Initial & Final humidities
--- 56|Start & end timestamp|Unique temperatures measurement|Max & Min humidities
--- 57|Start timestamp only|Unique temperatures measurement|Max & Min humidities
--- 58|End timestamp only|Unique temperatures measurement|Max & Min humidities
--- 59|Individual readings timestamp|Unique temperatures measurement|Max & Min humidities
--- 60|Start & end timestamp|Unique temperatures measurement|Unique humidity measurement
--- 61|Start timestamp only|Unique temperatures measurement|Unique humidity measurement
--- 62|End timestamp only|Unique temperatures measurement|Unique humidity measurement
--- 63|Individual readings timestamp|Unique temperatures measurement|Unique humidity measurement
+-- 48|Start & end timestamp|Unique temperature measurement|No humidity known
+-- 49|Start timestamp only|Unique temperature measurement|No humidity known
+-- 50|End timestamp only|Unique temperature measurement|No humidity known
+-- 51|Individual readings timestamp|Unique temperature measurement|No humidity known
+-- 52|Start & end timestamp|Unique temperature measurement|Initial & Final humidities
+-- 53|Start timestamp only|Unique temperature measurement|Initial & Final humidities
+-- 54|End timestamp only|Unique temperature measurement|Initial & Final humidities
+-- 55|Individual readings timestamp|Unique temperature measurement|Initial & Final humidities
+-- 56|Start & end timestamp|Unique temperature measurement|Max & Min humidities
+-- 57|Start timestamp only|Unique temperature measurement|Max & Min humidities
+-- 58|End timestamp only|Unique temperature measurement|Max & Min humidities
+-- 59|Individual readings timestamp|Unique temperature measurement|Max & Min humidities
+-- 60|Start & end timestamp|Unique temperature measurement|Unique humidity measurement
+-- 61|Start timestamp only|Unique temperature measurement|Unique humidity measurement
+-- 62|End timestamp only|Unique temperature measurement|Unique humidity measurement
+-- 63|Individual readings timestamp|Unique temperature measurement|Unique humidity measurement
 
