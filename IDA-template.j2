@@ -48,8 +48,8 @@
 {% if observation.comment is defined -%}
 #   Comentario:   {{ observation.comment  }}
 {% endif -%}
-# altura;acimut;magnitud;temperatura_de_cielo;marca_de_tiempo
 # FIN DE CABECERA
+altura;acimut;magnitud;temperatura_de_cielo;marca_de_tiempo
 {% for reading in readings -%}
 {{ reading.altitude }};{{ reading.azimuth }};{{ reading.magnitude }};{{ reading.tsky | default(omit) }};{{ reading.timestamp | default(omit) }}
 {% endfor -%}

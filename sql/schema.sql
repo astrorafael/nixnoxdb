@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS site_t
 	site      TEXT NOT NULL , -- Site Name i.e Cerro de Almodovar
 	longitude REAL NOT NULL , -- in floating point degrees, negative west
 	latitude  REAL NOT NULL , -- in floating point degrees
+	long_sexa TEXT,           -- in printable format ddd mm ss.ss E|W
+	lati_sexa TEXT,           -- in printable format  dd mm ss.ss N|S
 	altitude  REAL,           -- meters above sea level
 	location  TEXT,           -- i.e. Coslada
 	province  TEXT,           -- i.e. Madrid
@@ -98,16 +100,16 @@ CREATE TABLE IF NOT EXISTS observation_t
 	time_1_id       INTEGER NOT NULL REFERENCES time_t(time_id),  -- mandatory time (see flags for details)
 	date_2_id       INTEGER        L REFERENCES date_t(date_id),  -- optional date (see flags for details)
 	time_2_id       INTEGER          REFERENCES time_t(time_id),  -- optional time (see flags for details)
-	temperature_1   REAL, -- observation temperature 1 (see flags for details)
-	temperature_2   REAL, -- observation temperature 2 (see flags for details)
-	humidity_1      REAL, -- observation humidity 1    (see flags for details)
-	humidity_2      REAL, -- observation humidity 2    (see flags for details)
-	weather         TEXT, -- ballpark estimation of weather (cloudy, clear, overcast, etc)
-	other_observers TEXT, -- free text for secondary observers            
-	comment         TEXT, -- free text fro comments
-	image_url       TEXT, -- Site image as an URL
-	image           BLOB, -- Site image as an embdeed picture
-	plot            BLOB, -- plot from readings
+	temperature_1   REAL,    -- observation temperature 1 (see flags for details)
+	temperature_2   REAL,    -- observation temperature 2 (see flags for details)
+	humidity_1      INTEGER, -- observation humidity 1    (see flags for details)
+	humidity_2      INTEGER, -- observation humidity 2    (see flags for details)
+	weather         TEXT,    -- ballpark estimation of weather (cloudy, clear, overcast, etc)
+	other_observers TEXT,    -- free text for secondary observers            
+	comment         TEXT,    -- free text fro comments
+	image_url       TEXT,    -- Site image as an URL
+	image           BLOB,    -- Site image as an embedded picture
+	plot            BLOB,    -- plot from readings
 	PRIMARY KEY (site_id,observer_id,photometer_id,date_1_id,time_1_id)
 );
 
