@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS date_t
 (
 	date_id        INTEGER PRIMARY KEY, 
 	sql_date       TEXT,    -- Date as a YYYY-MM-DD string
-	date           TEXT,    -- date as a local string DD-MM-YYYY
+	date           TEXT,    -- date as a Spanish date string DD-MM-YYYY
 	day            INTEGER, -- day within month (1 .. 31)
 	day_year       INTEGER, -- day within the year 1..366
 	julian_day     REAL,    -- day as Julian Day
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS photometer_t
 	tag           TEXT,          -- photometer tag or symbolic name i.e. SEA#08
 	fov           REAL,          -- Filed of view, in degrees
 	zero_point    REAL,          -- Zero point if known (TAS only)
-	valid_since   TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')),     -- timestamp since zero_point value is valid
-	valid_until   TEXT DEFAULT '2999-12-31T23:59:59', -- timestamp util  zero_point value is valid
-	valid_state   TEXT DEFAULT 'Current'              -- either "Current" or "Expired"
+	valid_since   TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')), -- timestamp since zero_point value is valid
+	valid_until   TEXT NOT NULL DEFAULT '2999-12-31T23:59:59', -- timestamp util  zero_point value is valid
+	valid_state   TEXT NOT NULL DEFAULT 'Current'              -- either "Current" or "Expired"
 );
 
 
@@ -63,10 +63,10 @@ CREATE TABLE IF NOT EXISTS site_t
 CREATE TABLE IF NOT EXISTS observer_t
 (
 	observer_id  INTEGER PRIMARY KEY,
-	name         TEXT NOT NULL, -- Site Name i.e Cerro de Almodovar
+	name         TEXT NOT NULL, -- Site Name i.e. Cerro de Almodovar
 	surname      TEXT NOT NULL, -- in floating point degrees, negative west
-	nickname     TEXT, -- nickname in epicollect5
-	organization TEXT, -- i.e. AstroHenares
+	nickname     TEXT,          -- nickname (i,e. nick in epicollect5)
+	organization TEXT,          -- i.e. AstroHenares
 	valid_since  TEXT  DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')), -- timestamp since organization value is valid
 	valid_until  TEXT  DEFAULT '2999-12-31T23:59:59', 
     valid_state  TEXT  DEFAULT 'Current'
@@ -123,5 +123,7 @@ CREATE TABLE IF NOT EXISTS readings_t
 	magnitude        REAL, -- magnitude/arcser^2
 	tsky             REAL  -- Sky temperature in ºC (TAS device only)
 );
+
+CREATE INDEX IF NOT EXISTS readings_i ON readings_t(observation_id);
 
 COMMIT;

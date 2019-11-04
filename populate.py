@@ -75,35 +75,7 @@ class Date(Table):
         self.__fmt   = date_fmt
         self.__start = datetime.date(year_start,1,1)
         self.__end   = datetime.date(year_end,12,31)
-        self.table()
         self.populate(None)
-
-      
-    def table(self):
-        '''
-        Create the SQLite Date Table
-        '''
-        self.connection.execute(
-            '''
-            CREATE TABLE IF NOT EXISTS date_t
-            (
-            date_id        INTEGER PRIMARY KEY, 
-            sql_date       TEXT, 
-            date           TEXT,
-            day            INTEGER,
-            day_year       INTEGER,
-            julian_day     REAL,
-            weekday        TEXT,
-            weekday_abbr   TEXT,
-            weekday_num    INTEGER,
-            month_num      INTEGER,
-            month          TEXT,
-            month_abbr     TEXT,
-            year           INTEGER
-            );
-            '''
-        )
-        self.connection.commit()
 
 
     def populate(self, json_dir):
@@ -156,6 +128,6 @@ def open_database(dbase_path):
     print("Opening database {0}".format(dbase_path))
     return sqlite3.connect(dbase_path)
 
-connection = open_database("nixnox.db")
+connection = open_database("kk.db")
 DateTable = Date(connection)
-DateTable.schema("%d/%m/%Y",2000,2036)
+DateTable.schema("%d/%m/%Y",2000,2050)
