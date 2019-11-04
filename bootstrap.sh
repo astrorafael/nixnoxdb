@@ -21,4 +21,4 @@ sqlite3 ${db} <<EOF
 EOF
 }
 
- bootstrap ${dbase}
+bootstrap ${dbase}
