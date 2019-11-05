@@ -45,18 +45,20 @@ CREATE TABLE IF NOT EXISTS photometer_t
 
 CREATE TABLE IF NOT EXISTS site_t
 (
-	site_id   INTEGER PRIMARY KEY,
-	site      TEXT NOT NULL , -- Site Name i.e Cerro de Almodovar
-	longitude REAL NOT NULL , -- in floating point degrees, negative west
-	latitude  REAL NOT NULL , -- in floating point degrees
-	long_sexa TEXT,           -- in printable format ddd mm ss.ss E|W
-	lati_sexa TEXT,           -- in printable format  dd mm ss.ss N|S
-	altitude  REAL,           -- meters above sea level
-	location  TEXT,           -- i.e. Coslada
-	province  TEXT,           -- i.e. Madrid
-	region    TEXT,           -- i.e. Comunidad de Madrid
-	country   TEXT NOT NULL DEFAULT 'España',       -- i.e España
-	timezone  TEXT NOT NULL DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
+	site_id        INTEGER PRIMARY KEY,
+	site           TEXT NOT NULL , -- Site Name i.e Cerro de Almodovar
+	longitude      REAL NOT NULL , -- in floating point degrees, negative west
+	latitude       REAL NOT NULL , -- in floating point degrees
+	longitude_sexa TEXT,           -- in printable format ddd mm ss.ss E|W
+	latitude_sexa  TEXT,           -- in printable format  dd mm ss.ss N|S
+	longitude_rad  REAL,           -- longitude in radians
+	latitude_rad   REAL,           -- latitude in radians
+	altitude       REAL,           -- meters above sea level
+	location       TEXT,           -- i.e. Coslada
+	province       TEXT,           -- i.e. Madrid
+	region         TEXT,           -- i.e. Comunidad de Madrid
+	country        TEXT NOT NULL DEFAULT 'España',       -- i.e España
+	timezone       TEXT NOT NULL DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
 	-- PRIMARY KEY (site)
 );
 
