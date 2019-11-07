@@ -178,7 +178,7 @@ def get_site(connection, site_id):
     row = {'site_id': site_id}
     cursor.execute(
         '''
-        SELECT site, longitude, latitude, altitude, location, province, region, country, timezone
+        SELECT site, longitude_sexa, latitude_sexa, altitude, location, province, region, country, timezone
         FROM  site_t
         WHERE site_id == :site_id
         ''', row)
