@@ -1,6 +1,7 @@
 #!/bin/bash
 rm -fr nixnox.db
 sqlite3 nixnox.db <<EOF
+.load /usr/local/lib/libsqlitefunctions
 .read sql/schema.sql
 --------------
 -- Dimensiones
