@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS site_t
 	altitude       REAL,           -- meters above sea level
 	location       TEXT,           -- i.e. Coslada
 	province       TEXT,           -- i.e. Madrid
-	region         TEXT,           -- i.e. Comunidad de Madrid
+	state          TEXT,           -- i.e. Comunidad de Madrid
 	country        TEXT NOT NULL DEFAULT 'España',       -- i.e España
 	timezone       TEXT NOT NULL DEFAULT 'Europe/Madrid' -- i.e. Europe/Madrid
 	-- PRIMARY KEY (site)

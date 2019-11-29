@@ -178,12 +178,12 @@ def get_site(connection, site_id):
     row = {'site_id': site_id}
     cursor.execute(
         '''
-        SELECT site, longitude_sexa, latitude_sexa, altitude, location, province, region, country, timezone
+        SELECT site, longitude_sexa, latitude_sexa, altitude, location, province, state, country, timezone
         FROM  site_t
         WHERE site_id == :site_id
         ''', row)
     result = cursor.fetchone()
-    keys = ['site', 'longitude', 'latitude', 'altitude', 'location', 'province', 'region', 'country', 'timezone']
+    keys = ['site', 'longitude', 'latitude', 'altitude', 'location', 'province', 'state', 'country', 'timezone']
     return { k: v for k, v in dict(zip(keys,result)).items() if v is not None}
 
 

@@ -1,7 +1,7 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
-INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,region) 
+INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,state) 
 	VALUES("Observatorio de Guirguillano",
 		sexa2latitude("42 42 41.39 N"),
 		sexa2longitude("01 51 52.46 W"), 
@@ -12,7 +12,7 @@ INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_se
 		500, 
 		"Guirguillano", "Navarra", "Navarra");
 
-INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,region) 
+INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,state) 
 	VALUES("Sant Pau de Pinós",
 		sexa2latitude("41 58 12.63 N"),
 		sexa2longitude("01 57 22.94 E"),
@@ -23,7 +23,7 @@ INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_se
 		774, 
 		"Santa Maria de Merlès", "Barcelona", "Cataluña");
 
-INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,region) 
+INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,state) 
 	VALUES("Santuario Virgen de las veredas",
 		sexa2latitude("38 31 26.76 N"),
 		sexa2longitude("04 38 45.6 W"), 
@@ -34,7 +34,7 @@ INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_se
 		481, 
 		"Torrecampo", "Córdoba", "Andalucía");
 
-INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,region) 
+INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,state) 
 	VALUES("Venta de la Leche",
 		sexa2latitude("36 59 59.34 N"),
 		sexa2longitude("04 12 29.10 W"), 
@@ -45,7 +45,7 @@ INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_se
 		1100, 
 		"Zafarraya", "Granada", "Andalucía");
 
-INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,region) 
+INSERT OR REPLACE INTO site_t(site,latitude,longitude,latitude_sexa,longitude_sexa,longitude_rad,latitude_rad,altitude,location,province,state) 
 	VALUES("Monasterio de Tentudia",
 		38.054005,
 		-6.338339,
